@@ -1,0 +1,428 @@
+<esxdl name="WsDeploy">
+	<EsdlStruct name='Task'>
+		<EsdlElement name='Caption' type='string'/>
+		<EsdlElement name='FileName' type='string'/>
+		<EsdlElement name='TargetPath' type='string'/>
+		<EsdlElement name='SourcePath' type='string'/>
+		<EsdlElement name='Status' type='int'/>
+		<EsdlElement name='Message' type='string'/>
+	</EsdlStruct>
+	<EsdlStruct name='Component'>
+		<EsdlElement name='Type' type='string'/>
+		<EsdlElement name='DisplayType' type='string'/>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='Build' type='string'/>
+		<EsdlElement name='Computer' type='string'/>
+		<EsdlElement name='Instance' type='string'/>
+		<EsdlElement name='InstanceType' type='string'/>
+		<EsdlArray name='Tasks'  type='Task'/>
+	</EsdlStruct>
+	<EsdlStruct name='DeployOptions'>
+		<EsdlElement name='Compare' type='bool'/>
+		<EsdlElement name='ConfigFiles' type='bool'/>
+		<EsdlElement name='BuildFiles' type='bool'/>
+		<EsdlElement name='UpgradeBuildFiles' type='bool'/>
+		<EsdlElement name='Start' type='bool'/>
+		<EsdlElement name='Stop' type='bool'/>
+		<EsdlElement name='BackupRename' type='bool'/>
+		<EsdlElement name='BackupCopy' type='bool'/>
+		<EsdlElement name='ArchiveEnv' type='bool'/>
+		<EsdlElement name='Log' type='bool'/>
+		<EsdlElement name='ArchivePath' type='string'/>
+	</EsdlStruct>
+	<EsdlStruct name='WsDeployReqInfo'>
+		<EsdlElement name='FileName' type='string'/>
+		<EsdlElement name='UserId' type='string'/>
+	</EsdlStruct>
+	<EsdlStruct name='DeployInfo'>
+		<EsdlArray name='Components'  type='Component'/>
+		<EsdlElement name='Options' complex_type='DeployOptions'/>
+		<EsdlElement name='Status' type='string'/>
+	</EsdlStruct>
+	<EsdlStruct name='DaliInfo'>
+		<EsdlElement name='DaliIp' type='string'/>
+		<EsdlElement name='DaliName' type='string'/>
+	</EsdlStruct>
+	<EsdlRequest name='EmptyRequest'>
+	</EsdlRequest>
+	<EsdlResponse name='InitResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Component' type='string'/>
+		<EsdlElement name='Command' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='DeployRequest'>
+		<EsdlElement name='Deploy' complex_type='DeployInfo'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='DeployResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Component' type='string'/>
+		<EsdlElement name='Command' type='string'/>
+		<EsdlElement name='Deploy' type='string'/>
+		<EsdlElement name='Status' type='string'/>
+	</EsdlResponse>
+	<EsdlResponse name='GraphResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='GraphContainer' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='NavMenuEventRequest'>
+		<EsdlElement name='Cmd' type='string'/>
+		<EsdlElement name='XmlArgs' type='string'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='NavMenuEventResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Component' type='string'/>
+		<EsdlElement name='Command' type='string'/>
+		<EsdlElement name='XmlArgs' type='string'/>
+		<EsdlElement name='LastSaved' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='DisplaySettingsRequest'>
+		<EsdlElement name='Cmd' type='string'/>
+		<EsdlElement name='XmlArgs' type='string'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='DisplaySettingsResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Component' type='string'/>
+		<EsdlElement name='CompDefn' type='string'/>
+		<EsdlElement name='ViewChildNodes' type='string'/>
+		<EsdlElement name='MultiRowNodes' type='string'/>
+		<EsdlElement name='XmlArgs' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='SaveSettingRequest'>
+		<EsdlElement name='XmlArgs' type='string'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='SaveSettingResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='UpdateAttr' type='string'/>
+		<EsdlElement name='UpdateValue' type='string'/>
+		<EsdlElement name='PrevValue' type='string'/>
+		<EsdlElement name='IsSaved' type='string'/>
+		<EsdlElement name='Refresh' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='GetBuildSetInfoRequest'>
+		<EsdlElement name='Cmd' type='string'/>
+		<EsdlElement name='XmlArgs' type='string'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='GetBuildSetInfoResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Component' type='string'/>
+		<EsdlElement name='XmlArgs' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='GetDeployableCompsRequest'>
+		<EsdlElement name='Cmd' type='string'/>
+		<EsdlElement name='XmlArgs' type='string'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='GetDeployableCompsResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Component' type='string'/>
+		<EsdlElement name='XmlArgs' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='StartDeploymentRequest'>
+		<EsdlElement name='SelComps' type='string'/>
+		<EsdlElement name='Options' complex_type='DeployOptions'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='StartDeploymentResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Status' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='GetBuildServerDirsRequest'>
+		<EsdlElement name='Cmd' type='string'/>
+		<EsdlElement name='XmlArgs' type='string'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='GetBuildServerDirsResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Component' type='string'/>
+		<EsdlElement name='XmlArgs' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='ImportBuildRequest'>
+		<EsdlElement name='BuildName' type='string'/>
+		<EsdlElement name='BuildUrl' type='string'/>
+		<EsdlElement name='BuildSets' type='string'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='ImportBuildResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Status' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='GetComputersForRoxieRequest'>
+		<EsdlElement name='Cmd' type='string'/>
+		<EsdlElement name='XmlArgs' type='string'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='GetComputersForRoxieResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Computers' type='string'/>
+		<EsdlElement name='Filters' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='HandleRoxieOperationRequest'>
+		<EsdlElement name='Cmd' type='string'/>
+		<EsdlElement name='XmlArgs' type='string'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='HandleRoxieOperationResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Status' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='HandleThorTopologyRequest'>
+		<EsdlElement name='Operation' type='string'/>
+		<EsdlElement name='XmlArgs' type='string'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='HandleThorTopologyResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Status' type='string'/>
+		<EsdlElement name='CompName' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='HandleAttributeDeleteRequest'>
+		<EsdlElement name='Operation' type='string'/>
+		<EsdlElement name='XmlArgs' type='string'/>
+		<EsdlElement name='bLeaf' type='bool'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlRequest name='HandleAttributeAddRequest'>
+		<EsdlElement name='Operation' type='string'/>
+		<EsdlElement name='XmlArgs' type='string'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='HandleAttributeAddResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Status' type='string'/>
+		<EsdlElement name='CompName' type='string'/>
+	</EsdlResponse>
+	<EsdlResponse name='HandleAttributeDeleteResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Status' type='string'/>
+		<EsdlElement name='CompName' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='HandleComponentRequest'>
+		<EsdlElement name='Operation' type='string'/>
+		<EsdlElement name='XmlArgs' type='string'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='HandleComponentResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Status' type='string'/>
+		<EsdlElement name='CompName' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='HandleInstanceRequest'>
+		<EsdlElement name='Operation' type='string'/>
+		<EsdlElement name='XmlArgs' type='string'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='HandleInstanceResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Status' type='string'/>
+		<EsdlElement name='NewName' type='string'/>
+		<EsdlElement name='Duplicates' type='string'/>
+		<EsdlElement name='ReqdCompNames' type='string'/>
+		<EsdlElement name='AddReqdComps' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='AddReqdCompsRequest'>
+		<EsdlElement name='XmlArgs' type='string'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='AddReqdCompsResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Status' type='string'/>
+		<EsdlElement name='Failures' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='HandleEspServiceBindingsRequest'>
+		<EsdlElement name='Operation' type='string'/>
+		<EsdlElement name='XmlArgs' type='string'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='HandleEspServiceBindingsResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Status' type='string'/>
+		<EsdlElement name='NewName' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='HandleComputerRequest'>
+		<EsdlElement name='Operation' type='string'/>
+		<EsdlElement name='XmlArgs' type='string'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='HandleComputerResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Status' type='string'/>
+		<EsdlElement name='CompName' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='HandleTopologyRequest'>
+		<EsdlElement name='Operation' type='string'/>
+		<EsdlElement name='XmlArgs' type='string'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='HandleTopologyResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Status' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='HandleRowsRequest'>
+		<EsdlElement name='Operation' type='string'/>
+		<EsdlElement name='XmlArgs' type='string'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='HandleRowsResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Status' type='string'/>
+		<EsdlElement name='CompName' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='HandleAccessRulesRequest'>
+		<EsdlElement name='Operation' type='string'/>
+		<EsdlElement name='XmlArgs' type='string'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlRequest name='HandleBaseAccessControlListRequest'>
+		<EsdlElement name='Operation' type='string'/>
+		<EsdlElement name='XmlArgs' type='string'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='HandleAccessRulesResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Status' type='string'/>
+	</EsdlResponse>
+	<EsdlResponse name='HandleBaseAccessControlListResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Status' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='GetNavTreeDefnRequest'>
+		<EsdlElement name='XmlArgs' type='string'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='GetNavTreeDefnResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='CompDefn' type='string'/>
+		<EsdlElement name='ReadOnly' type='string'/>
+		<EsdlElement name='LastSaved' type='string'/>
+		<EsdlElement name='LastStarted' type='string'/>
+		<EsdlElement name='Message' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='GetValueRequest'>
+		<EsdlElement name='Params' type='string'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='GetValueResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Status' type='string'/>
+		<EsdlElement name='ReqValue' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='UnlockUserRequest'>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='UnlockUserResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Status' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='ClientAliveRequest'>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='ClientAliveResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='LastSaved' type='string'/>
+		<EsdlElement name='LastStarted' type='string'/>
+		<EsdlElement name='RefreshClient' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='GetEnvironmentRequest'>
+	</EsdlRequest>
+	<EsdlResponse name='GetEnvironmentResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='EnvXml' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='SetEnvironmentRequest'>
+		<EsdlElement name='EnvXml' type='string'/>
+	</EsdlRequest>
+	<EsdlResponse name='SetEnvironmentResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='ReturnCode' type='int'/>
+		<EsdlElement name='ErrorMsg' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='LockEnvironmentForCloudRequest'>
+		<EsdlElement name='Ip' type='string'/>
+		<EsdlElement name='UserName' type='string'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='LockEnvironmentForCloudResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Msg' type='string'/>
+		<EsdlElement name='ReturnCode' type='int'/>
+	</EsdlResponse>
+	<EsdlRequest name='UnlockEnvironmentForCloudRequest'>
+		<EsdlElement name='Ip' type='string'/>
+		<EsdlElement name='UserName' type='string'/>
+		<EsdlElement name='NewEnvXml' type='string'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='UnlockEnvironmentForCloudResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Msg' type='string'/>
+		<EsdlElement name='ReturnCode' type='int'/>
+	</EsdlResponse>
+	<EsdlRequest name='SaveEnvironmentForCloudRequest'>
+		<EsdlElement name='Ip' type='string'/>
+		<EsdlElement name='UserName' type='string'/>
+		<EsdlElement name='NewEnv' type='string'/>
+		<EsdlElement name='Id' type='string'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='SaveEnvironmentForCloudResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Msg' type='string'/>
+		<EsdlElement name='ReturnCode' type='int'/>
+	</EsdlResponse>
+	<EsdlRequest name='RollbackEnvironmentForCloudRequest'>
+		<EsdlElement name='Ip' type='string'/>
+		<EsdlElement name='UserName' type='string'/>
+		<EsdlElement name='Id' type='string'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='RollbackEnvironmentForCloudResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Msg' type='string'/>
+		<EsdlElement name='ReturnCode' type='int'/>
+	</EsdlResponse>
+	<EsdlRequest name='NotifyInitSystemSaveEnvForCloudRequest'>
+		<EsdlElement name='Ip' type='string'/>
+		<EsdlElement name='UserName' type='string'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='NotifyInitSystemSaveEnvForCloudResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Msg' type='string'/>
+		<EsdlElement name='ReturnCode' type='int'/>
+	</EsdlResponse>
+	<EsdlRequest name='BuildEnvironmentRequest'>
+		<EsdlElement name='XmlArgs' type='string'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='BuildEnvironmentResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Status' type='string'/>
+		<EsdlElement name='Message' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='GetSubnetIPAddrRequest'>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='GetSubnetIPAddrResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='IPList' type='string'/>
+		<EsdlElement name='Message' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='GetSummaryRequest'>
+		<EsdlElement name='PrepareLinkFlag' type='bool'/>
+		<EsdlElement name='ReqInfo' complex_type='WsDeployReqInfo'/>
+	</EsdlRequest>
+	<EsdlResponse name='GetSummaryResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Status' type='string'/>
+		<EsdlElement name='XmlStr' type='string'/>
+	</EsdlResponse>
+	<EsdlRequest name='WsDeployPingRequest'>
+	</EsdlRequest>
+	<EsdlResponse name='WsDeployPingResponse'>
+	</EsdlResponse>
+		<EsdlService name='WsDeploy'  exceptions_inline='xslt/exceptions.xslt' auth_feature='NONE'>
+	<EsdlMethod name='AddReqdComps' request_type='AddReqdCompsRequest' response_type='AddReqdCompsResponse'  help='' description='Add the required components on given ip addresses.'/>
+	<EsdlMethod name='BuildEnvironment' request_type='BuildEnvironmentRequest' response_type='BuildEnvironmentResponse'  help='' description='To Build the environment from wizard by providing xml'/>
+	<EsdlMethod name='ClientAlive' request_type='ClientAliveRequest' response_type='ClientAliveResponse'  help='' description='Send a signal back to the service that the client is alive'/>
+	<EsdlMethod name='DisplaySettings' request_type='DisplaySettingsRequest' response_type='DisplaySettingsResponse'  resp_xsl_default='xslt/ui_configmgr.xslt' help='' description='Display Component Settings'/>
+	<EsdlMethod name='GetBuildServerDirs' request_type='GetBuildServerDirsRequest' response_type='GetBuildServerDirsResponse'  help='' description='Get Build Server Directories'/>
+	<EsdlMethod name='GetBuildSetInfo' request_type='GetBuildSetInfoRequest' response_type='GetBuildSetInfoResponse'  help='' description='Get BuildSet Info'/>
+	<EsdlMethod name='GetComputersForRoxie' request_type='GetComputersForRoxieRequest' response_type='GetComputersForRoxieResponse'  help='' description='Get computers for Roxie components'/>
+	<EsdlMethod name='GetDeployableComps' request_type='GetDeployableCompsRequest' response_type='GetDeployableCompsResponse'  resp_xsl_default='xslt/ui_configmgr.xslt' help='' description='Get Deployable Components'/>
+	<EsdlMethod name='GetEnvironment' request_type='GetEnvironmentRequest' response_type='GetEnvironmentResponse'  help='' description='Get the environment as an xml string'/>
+	<EsdlMethod name='GetNavTreeDefn' request_type='GetNavTreeDefnRequest' response_type='GetNavTreeDefnResponse'  help='' description='Return nav tree definition for display purposes'/>
+	<EsdlMethod name='GetSubnetIPAddr' request_type='GetSubnetIPAddrRequest' response_type='GetSubnetIPAddrResponse'  help='' description='To get the List IP Addresses in cloud environment by executing auto discovery script.'/>
+	<EsdlMethod name='GetSummary' request_type='GetSummaryRequest' response_type='GetSummaryResponse'  help='' description='To get the environment summary'/>
+	<EsdlMethod name='GetValue' request_type='GetValueRequest' response_type='GetValueResponse'  help='' description='Returns the value for the requested field'/>
+	<EsdlMethod name='Graph' request_type='EmptyRequest' response_type='GraphResponse'  resp_xsl_default='xslt/graph_display.xsl' help='' description='Dependency graph'/>
+	<EsdlMethod name='HandleAccessRules' request_type='HandleAccessRulesRequest' response_type='HandleAccessRulesResponse'  help='' description='Handle Access Rules Requests suchs as add &amp; delete e.t.c'/>
+	<EsdlMethod name='HandleAttributeAdd' request_type='HandleAttributeAddRequest' response_type='HandleAttributeAddResponse'  help='' description='Handle add fom XML view'/>
+	<EsdlMethod name='HandleAttributeDelete' request_type='HandleAttributeDeleteRequest' response_type='HandleAttributeDeleteResponse'  help='' description='Handle branch or leaf deletes from XML view'/>
+	<EsdlMethod name='HandleBaseAccessControlList' request_type='HandleBaseAccessControlListRequest' response_type='HandleBaseAccessControlListResponse'  help='' description='Handle Base Access Control List Requests suchs as add &amp; delete e.t.c'/>
+	<EsdlMethod name='HandleComponent' request_type='HandleComponentRequest' response_type='HandleComponentResponse'  help='' description='Handle new component operations like add &amp; delete in the environment'/>
+	<EsdlMethod name='HandleComputer' request_type='HandleComputerRequest' response_type='HandleComputerResponse'  help='' description='Handle new hardware operations like add &amp; delete computer e.t.c'/>
+	<EsdlMethod name='HandleEspServiceBindings' request_type='HandleEspServiceBindingsRequest' response_type='HandleEspServiceBindingsResponse'  help='' description='Handle new Esp Service binding operations like add &amp; delete '/>
+	<EsdlMethod name='HandleInstance' request_type='HandleInstanceRequest' response_type='HandleInstanceResponse'  help='' description='Handle new instance operations like add &amp; delete in the environment'/>
+	<EsdlMethod name='HandleRows' request_type='HandleRowsRequest' response_type='HandleRowsResponse'  help='' description='Handle row operations like add &amp; delete e.t.c'/>
+	<EsdlMethod name='HandleRoxieOperation' request_type='HandleRoxieOperationRequest' response_type='HandleRoxieOperationResponse'  help='' description='Add computers to Roxie'/>
+	<EsdlMethod name='HandleThorTopology' request_type='HandleThorTopologyRequest' response_type='HandleThorTopologyResponse'  help='' description='Add computers to Thor topology'/>
+	<EsdlMethod name='HandleTopology' request_type='HandleTopologyRequest' response_type='HandleTopologyResponse'  help='' description='Handle Topology  operations like add &amp; delete e.t.c'/>
+	<EsdlMethod name='ImportBuild' request_type='ImportBuildRequest' response_type='ImportBuildResponse'  help='' description='Import Build'/>
+	<EsdlMethod name='LockEnvironmentForCloud' request_type='LockEnvironmentForCloudRequest' response_type='LockEnvironmentForCloudResponse'  help='' description='Lock the environment. Only valid as a soapcall in Cloud Environments'/>
+	<EsdlMethod name='NavMenuEvent' request_type='NavMenuEventRequest' response_type='NavMenuEventResponse'  help='' description='Handle an event from the navigation tree menu'/>
+	<EsdlMethod name='NotifyInitSystemSaveEnvForCloud' request_type='NotifyInitSystemSaveEnvForCloudRequest' response_type='NotifyInitSystemSaveEnvForCloudResponse'  help='' description='Rollback the environment. Only valid as a soapcall in Cloud Environments'/>
+	<EsdlMethod name='Ping' request_type='WsDeployPingRequest' response_type='WsDeployPingResponse'  auth_feature='none'/>
+	<EsdlMethod name='RollbackEnvironmentForCloud' request_type='RollbackEnvironmentForCloudRequest' response_type='RollbackEnvironmentForCloudResponse'  help='' description='Rollback the environment. Only valid as a soapcall in Cloud Environments'/>
+	<EsdlMethod name='SaveEnvironmentForCloud' request_type='SaveEnvironmentForCloudRequest' response_type='SaveEnvironmentForCloudResponse'  help='' description='Save the environment. Only valid as a soapcall in Cloud Environments'/>
+	<EsdlMethod name='SaveSetting' request_type='SaveSettingRequest' response_type='SaveSettingResponse'  help='' description='Save Component Setting'/>
+	<EsdlMethod name='SetEnvironment' request_type='SetEnvironmentRequest' response_type='SetEnvironmentResponse'  help='' description='Validate, update Dali and set the environment that is passed in as an xml string'/>
+	<EsdlMethod name='StartDeployment' request_type='StartDeploymentRequest' response_type='StartDeploymentResponse'  help='' description='Start Deployment'/>
+	<EsdlMethod name='UnlockEnvironmentForCloud' request_type='UnlockEnvironmentForCloudRequest' response_type='UnlockEnvironmentForCloudResponse'  help='' description='Unlock the environment. Only valid as a soapcall in Cloud Environments'/>
+	<EsdlMethod name='UnlockUser' request_type='UnlockUserRequest' response_type='UnlockUserResponse'  help='' description='Unlocks a user that is already connected'/>
+		</EsdlService></esxdl>

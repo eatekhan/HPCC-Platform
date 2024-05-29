@@ -1,0 +1,491 @@
+<esxdl name="ws_topology">
+	<EsdlEnumType name='RoxieQueueFilter' base_type='string'>
+		<EsdlEnumItem name='All' enum='All'/>
+		<EsdlEnumItem name='QueriesOnly' enum='QueriesOnly'/>
+		<EsdlEnumItem name='WorkunitsOnly' enum='WorkunitsOnly'/>
+	</EsdlEnumType>
+	<EsdlEnumType name='TpMachineType' base_type='string'>
+		<EsdlEnumItem name='All' enum='ALLNODES'/>
+		<EsdlEnumItem name='Thor' enum='THORMACHINES'/>
+		<EsdlEnumItem name='Hole' enum='HOLEMACHINES'/>
+		<EsdlEnumItem name='Roxie' enum='ROXIEMACHINES'/>
+		<EsdlEnumItem name='Machines' enum='MACHINES'/>
+		<EsdlEnumItem name='Available' enum='AVAILABLEMACHINES'/>
+		<EsdlEnumItem name='DropZone' enum='DROPZONE'/>
+		<EsdlEnumItem name='StandBy' enum='STANDBYNNODE'/>
+		<EsdlEnumItem name='ThorSpare' enum='THORSPARENODES'/>
+		<EsdlEnumItem name='HoleStandby' enum='HOLESTANDBYNODES'/>
+	</EsdlEnumType>
+	<EsdlStruct name='TpMachine'>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='Netaddress' type='string'/>
+		<EsdlElement name='ConfigNetaddress' type='string' min_ver='1.09'/>
+		<EsdlElement name='Domain' type='string'/>
+		<EsdlElement name='Directory' type='string'/>
+		<EsdlElement name='Type' type='string'/>
+		<EsdlElement name='Available' type='string'/>
+		<EsdlElement name='OS' type='int'/>
+		<EsdlElement name='Path' type='string'/>
+		<EsdlElement name='Port' type='int'/>
+		<EsdlElement name='ProcessNumber' type='int' min_ver='1.18'/>
+		<EsdlElement name='Channels' type='unsigned' min_ver='1.30'/>
+	</EsdlStruct>
+	<EsdlStruct name='TpCluster'>
+		<EsdlElement name='Type' type='string'/>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='QueueName' type='string' min_ver='1.03'/>
+		<EsdlElement name='Build' type='string'/>
+		<EsdlElement name='Directory' type='string'/>
+		<EsdlElement name='LogDirectory' type='string'/>
+		<EsdlElement name='Desc' type='string'/>
+		<EsdlElement name='Prefix' type='string' max_ver='1.16'/>
+		<EsdlElement name='Path' type='string'/>
+		<EsdlElement name='DataModel' type='string'/>
+		<EsdlElement name='OS' type='int'/>
+		<EsdlElement name='HasThorSpareProcess' type='bool' min_ver='1.15'/>
+		<EsdlArray name='TpMachines'  type='TpMachine' min_ver='1.12'/>
+	</EsdlStruct>
+	<EsdlStruct name='TpLogicalCluster'>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='Queue' type='string'/>
+		<EsdlElement name='LanguageVersion' type='string' min_ver='1.14'/>
+		<EsdlElement name='Process' type='string' min_ver='1.11'/>
+		<EsdlElement name='Type' type='string' min_ver='1.22'/>
+		<EsdlElement name='QueriesOnly' type='bool' min_ver='1.31'/>
+	</EsdlStruct>
+	<EsdlStruct name='TpGroup' nil_remove='1'>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='Kind' type='string' min_ver='1.21'/>
+		<EsdlElement name='ReplicateOutputs' type='bool' min_ver='1.21'/>
+	</EsdlStruct>
+	<EsdlStruct name='TpDali'>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='Description' type='string'/>
+		<EsdlElement name='Build' type='string'/>
+		<EsdlElement name='BackupComputer' type='string'/>
+		<EsdlElement name='BackupDirectory' type='string'/>
+		<EsdlElement name='Type' type='string'/>
+		<EsdlElement name='Path' type='string'/>
+		<EsdlElement name='LogDirectory' type='string'/>
+		<EsdlElement name='AuditLogDirectory' type='string' min_ver='1.27'/>
+		<EsdlArray name='TpMachines'  type='TpMachine'/>
+	</EsdlStruct>
+	<EsdlStruct name='TpEclServer'>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='Description' type='string'/>
+		<EsdlElement name='Build' type='string'/>
+		<EsdlElement name='LogDirectory' type='string'/>
+		<EsdlElement name='Type' type='string'/>
+		<EsdlElement name='Path' type='string'/>
+		<EsdlArray name='TpMachines'  type='TpMachine'/>
+	</EsdlStruct>
+	<EsdlStruct name='TpEclAgent'>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='Description' type='string'/>
+		<EsdlElement name='Build' type='string'/>
+		<EsdlElement name='Type' type='string'/>
+		<EsdlElement name='Path' type='string'/>
+		<EsdlElement name='DaliServer' type='string'/>
+		<EsdlElement name='LogDir' type='string'/>
+		<EsdlArray name='TpMachines'  type='TpMachine'/>
+	</EsdlStruct>
+	<EsdlStruct name='TpAgentExec'>
+		<EsdlElement name='DaliServer' type='string'/>
+		<EsdlElement name='LogDir' type='string'/>
+	</EsdlStruct>
+	<EsdlStruct name='TpEclScheduler'>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='Description' type='string'/>
+		<EsdlElement name='Build' type='string'/>
+		<EsdlElement name='LogDirectory' type='string'/>
+		<EsdlElement name='Type' type='string'/>
+		<EsdlElement name='Path' type='string'/>
+		<EsdlArray name='TpMachines'  type='TpMachine'/>
+	</EsdlStruct>
+	<EsdlStruct name='TpBinding' nil_remove='1'>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='Service' type='string'/>
+		<EsdlElement name='ServiceType' type='string'/>
+		<EsdlElement name='BindingType' type='string' min_ver='1.23'/>
+		<EsdlElement name='ServiceBuildSet' type='string' min_ver='1.24'/>
+		<EsdlElement name='Port' type='string'/>
+		<EsdlElement name='Protocol' type='string'/>
+	</EsdlStruct>
+	<EsdlStruct name='TpEspServicePlugin'>
+		<EsdlElement name='ShortName' type='string'/>
+		<EsdlElement name='LongName' type='string'/>
+		<EsdlElement name='FolderName' type='string'/>
+		<EsdlElement name='WidgetName' type='string'/>
+	</EsdlStruct>
+	<EsdlStruct name='TpEspServer'>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='Description' type='string'/>
+		<EsdlElement name='Build' type='string'/>
+		<EsdlElement name='Type' type='string'/>
+		<EsdlElement name='Path' type='string'/>
+		<EsdlElement name='LogDirectory' type='string'/>
+		<EsdlArray name='TpMachines'  type='TpMachine'/>
+		<EsdlArray name='TpBindings'  type='TpBinding'/>
+	</EsdlStruct>
+	<EsdlStruct name='TpDfuServer'>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='Description' type='string'/>
+		<EsdlElement name='Build' type='string'/>
+		<EsdlElement name='Queue' type='string'/>
+		<EsdlElement name='Type' type='string'/>
+		<EsdlElement name='Path' type='string'/>
+		<EsdlElement name='LogDirectory' type='string'/>
+		<EsdlArray name='TpMachines'  type='TpMachine'/>
+	</EsdlStruct>
+	<EsdlStruct name='TpSashaServer'>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='Description' type='string'/>
+		<EsdlElement name='Build' type='string'/>
+		<EsdlElement name='Path' type='string'/>
+		<EsdlElement name='LogDirectory' type='string'/>
+		<EsdlArray name='TpMachines'  type='TpMachine'/>
+	</EsdlStruct>
+	<EsdlStruct name='TpLdapServer'>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='Description' type='string'/>
+		<EsdlElement name='Build' type='string'/>
+		<EsdlElement name='Path' type='string'/>
+		<EsdlArray name='TpMachines'  type='TpMachine'/>
+	</EsdlStruct>
+	<EsdlStruct name='TpDropZone'>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='Description' type='string'/>
+		<EsdlElement name='Build' type='string'/>
+		<EsdlElement name='Path' type='string'/>
+		<EsdlElement name='ECLWatchVisible' type='bool' min_ver='1.26'/>
+		<EsdlElement name='UMask' type='string' min_ver='1.26'/>
+		<EsdlArray name='TpMachines'  type='TpMachine'/>
+	</EsdlStruct>
+	<EsdlStruct name='TpMySqlServer'>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='Description' type='string'/>
+		<EsdlElement name='Build' type='string'/>
+		<EsdlElement name='Path' type='string'/>
+		<EsdlArray name='TpMachines'  type='TpMachine'/>
+	</EsdlStruct>
+	<EsdlStruct name='TpFTSlave'>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='Description' type='string'/>
+		<EsdlElement name='Build' type='string'/>
+		<EsdlElement name='Path' type='string'/>
+		<EsdlArray name='TpMachines'  type='TpMachine'/>
+	</EsdlStruct>
+	<EsdlStruct name='TpDkcSlave'>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='Description' type='string'/>
+		<EsdlElement name='Build' type='string'/>
+		<EsdlElement name='Path' type='string'/>
+		<EsdlArray name='TpMachines'  type='TpMachine'/>
+	</EsdlStruct>
+	<EsdlStruct name='TpGenesisServer'>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='Description' type='string'/>
+		<EsdlElement name='Build' type='string'/>
+		<EsdlElement name='Path' type='string'/>
+		<EsdlArray name='TpMachines'  type='TpMachine'/>
+	</EsdlStruct>
+	<EsdlStruct name='TpSparkThor'>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='Build' type='string'/>
+		<EsdlElement name='ThorClusterName' type='string'/>
+		<EsdlElement name='ThorPath' type='string'/>
+		<EsdlElement name='SparkExecutorCores' type='unsigned'/>
+		<EsdlElement name='SparkExecutorMemory' type='int64'/>
+		<EsdlElement name='SparkMasterPort' type='unsigned'/>
+		<EsdlElement name='SparkMasterWebUIPort' type='unsigned'/>
+		<EsdlElement name='SparkWorkerCores' type='unsigned'/>
+		<EsdlElement name='SparkWorkerMemory' type='int64'/>
+		<EsdlElement name='SparkWorkerPort' type='unsigned'/>
+		<EsdlElement name='LogDirectory' type='string'/>
+		<EsdlElement name='Path' type='string'/>
+		<EsdlArray name='TpMachines'  type='TpMachine'/>
+	</EsdlStruct>
+	<EsdlStruct name='TpQueue'>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='WorkUnit' type='string'/>
+	</EsdlStruct>
+	<EsdlStruct name='TpServices'>
+		<EsdlArray name='TpDalis'  type='TpDali'/>
+		<EsdlArray name='TpDfuServers'  type='TpDfuServer'/>
+		<EsdlArray name='TpDkcSlaves'  type='TpDkcSlave'/>
+		<EsdlArray name='TpDropZones'  type='TpDropZone'/>
+		<EsdlArray name='TpEclAgents'  type='TpEclAgent'/>
+		<EsdlArray name='TpEclServers'  type='TpEclServer'/>
+		<EsdlArray name='TpEclCCServers'  type='TpEclServer'/>
+		<EsdlArray name='TpEclSchedulers'  type='TpEclScheduler' min_ver='1.16'/>
+		<EsdlArray name='TpEspServers'  type='TpEspServer'/>
+		<EsdlArray name='TpFTSlaves'  type='TpFTSlave'/>
+		<EsdlArray name='TpGenesisServers'  type='TpGenesisServer'/>
+		<EsdlArray name='TpLdapServers'  type='TpLdapServer'/>
+		<EsdlArray name='TpMySqlServers'  type='TpMySqlServer'/>
+		<EsdlArray name='TpSashaServers'  type='TpSashaServer'/>
+		<EsdlArray name='TpSparkThors'  type='TpSparkThor' min_ver='1.28'/>
+	</EsdlStruct>
+	<EsdlStruct name='TpClusterNameType'>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='Type' type='string'/>
+		<EsdlElement name='IsDefault' type='bool'/>
+	</EsdlStruct>
+	<EsdlRequest name='TpListTargetClustersRequest'>
+	</EsdlRequest>
+	<EsdlResponse name='TpListTargetClustersResponse' exceptions_inline='1'>
+		<EsdlArray name='TargetClusters'  type='TpClusterNameType'/>
+	</EsdlResponse>
+	<EsdlStruct name='TpTargetCluster'>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='Prefix' type='string'/>
+		<EsdlElement name='Type' type='string'/>
+		<EsdlArray name='TpClusters'  type='TpCluster'/>
+		<EsdlArray name='TpEclCCServers'  type='TpEclServer'/>
+		<EsdlArray name='TpEclServers'  type='TpEclServer' min_ver='1.19'/>
+		<EsdlArray name='TpEclAgents'  type='TpEclAgent'/>
+		<EsdlArray name='TpEclSchedulers'  type='TpEclScheduler' min_ver='1.16'/>
+	</EsdlStruct>
+	<EsdlRequest name='TpTargetClusterQueryRequest'>
+		<EsdlElement name='Type' type='string'/>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='ShowDetails' type='bool' default='0'/>
+	</EsdlRequest>
+	<EsdlResponse name='TpTargetClusterQueryResponse' exceptions_inline='1'>
+		<EsdlElement name='ShowDetails' type='bool' default='0'/>
+		<EsdlElement name='MemThreshold' type='int'/>
+		<EsdlElement name='DiskThreshold' type='int'/>
+		<EsdlElement name='CpuThreshold' type='int'/>
+		<EsdlElement name='MemThresholdType' type='string'/>
+		<EsdlElement name='DiskThresholdType' type='string'/>
+		<EsdlElement name='PreflightProcessFilter' type='string' min_ver='1.13'/>
+		<EsdlElement name='AcceptLanguage' type='string' min_ver='1.20'/>
+		<EsdlArray name='TpTargetClusters'  type='TpTargetCluster'/>
+	</EsdlResponse>
+	<EsdlRequest name='TpClusterQueryRequest'>
+		<EsdlElement name='Type' type='string'/>
+	</EsdlRequest>
+	<EsdlResponse name='TpClusterQueryResponse' exceptions_inline='1'>
+		<EsdlElement name='EnableSNMP' type='bool' min_ver='1.08'/>
+		<EsdlElement name='AcceptLanguage' type='string' min_ver='1.20'/>
+		<EsdlArray name='TpClusters'  type='TpCluster'/>
+	</EsdlResponse>
+	<EsdlRequest name='TpLogicalClusterQueryRequest'>
+		<EsdlElement name='EclServerQueue' type='string'/>
+		<EsdlEnum name='RoxieQueueFilter' enum_type='RoxieQueueFilter' min_ver='1.31'/>
+	</EsdlRequest>
+	<EsdlResponse name='TpLogicalClusterQueryResponse' exceptions_inline='1'>
+		<EsdlArray name='TpLogicalClusters'  type='TpLogicalCluster'/>
+	</EsdlResponse>
+	<EsdlRequest name='TpGroupQueryRequest' nil_remove='1'>
+		<EsdlElement name='Kind' type='string' min_ver='1.21'/>
+	</EsdlRequest>
+	<EsdlResponse name='TpGroupQueryResponse' exceptions_inline='1'>
+		<EsdlArray name='TpGroups'  type='TpGroup'/>
+	</EsdlResponse>
+	<EsdlRequest name='TpClusterInfoRequest'>
+		<EsdlElement name='Name' type='string'/>
+	</EsdlRequest>
+	<EsdlResponse name='TpClusterInfoResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='WorkUnit' type='string'/>
+		<EsdlArray name='TpQueues'  type='TpQueue' min_ver='1.10'/>
+	</EsdlResponse>
+	<EsdlRequest name='TpMachineQueryRequest'>
+		<EsdlEnum name='Type' enum_type='TpMachineType'/>
+		<EsdlElement name='Cluster' type='string'/>
+		<EsdlElement name='OldIP' type='string'/>
+		<EsdlElement name='Path' type='string'/>
+		<EsdlElement name='Directory' type='string'/>
+		<EsdlElement name='LogDirectory' type='string'/>
+	</EsdlRequest>
+	<EsdlResponse name='TpMachineQueryResponse' exceptions_inline='1'>
+		<EsdlElement name='EnablePreflightInfo' type='bool'/>
+		<EsdlElement name='HasThorSpareProcess' type='bool' min_ver='1.15'/>
+		<EsdlEnum name='Type' enum_type='TpMachineType'/>
+		<EsdlElement name='Cluster' type='string'/>
+		<EsdlElement name='OldIP' type='string'/>
+		<EsdlElement name='LogDirectory' type='string'/>
+		<EsdlElement name='Path' type='string'/>
+		<EsdlElement name='MemThreshold' type='int'/>
+		<EsdlElement name='DiskThreshold' type='int'/>
+		<EsdlElement name='CpuThreshold' type='int'/>
+		<EsdlElement name='MemThresholdType' type='string'/>
+		<EsdlElement name='DiskThresholdType' type='string'/>
+		<EsdlElement name='PreflightProcessFilter' type='string' min_ver='1.13'/>
+		<EsdlElement name='EnableSNMP' type='bool' min_ver='1.08'/>
+		<EsdlElement name='AcceptLanguage' type='string' min_ver='1.20'/>
+		<EsdlArray name='TpMachines'  type='TpMachine'/>
+	</EsdlResponse>
+	<EsdlRequest name='TpMachineInfoRequest'>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='NetAddress' type='string'/>
+	</EsdlRequest>
+	<EsdlResponse name='TpMachineInfoResponse' exceptions_inline='1'>
+		<EsdlElement name='MachineInfo' complex_type='TpMachine'/>
+	</EsdlResponse>
+	<EsdlRequest name='TpServiceQueryRequest'>
+		<EsdlElement name='Type' type='string'/>
+	</EsdlRequest>
+	<EsdlResponse name='TpServiceQueryResponse' exceptions_inline='1' nil_remove='1'>
+		<EsdlElement name='MemThreshold' type='int'/>
+		<EsdlElement name='DiskThreshold' type='int'/>
+		<EsdlElement name='CpuThreshold' type='int'/>
+		<EsdlElement name='EncapsulatedSystem' type='bool' min_ver='1.07'/>
+		<EsdlElement name='EnableSNMP' type='bool' min_ver='1.08'/>
+		<EsdlElement name='PreflightProcessFilter' type='string' min_ver='1.13'/>
+		<EsdlElement name='AcceptLanguage' type='string' min_ver='1.20'/>
+		<EsdlElement name='MemThresholdType' type='string'/>
+		<EsdlElement name='DiskThresholdType' type='string'/>
+		<EsdlElement name='ServiceList' complex_type='TpServices'/>
+	</EsdlResponse>
+	<EsdlRequest name='TpSetMachineStatusRequest'>
+		<EsdlElement name='MachinePath' type='string'/>
+		<EsdlElement name='StatusValue' type='string'/>
+	</EsdlRequest>
+	<EsdlResponse name='TpSetMachineStatusResponse' exceptions_inline='1'>
+		<EsdlElement name='TpSetMachineStatusResult' type='bool'/>
+	</EsdlResponse>
+	<EsdlRequest name='TpSwapNodeRequest'>
+		<EsdlElement name='Cluster' type='string'/>
+		<EsdlElement name='OldIP' type='string'/>
+		<EsdlElement name='NewIP' type='string'/>
+	</EsdlRequest>
+	<EsdlResponse name='TpSwapNodeResponse' exceptions_inline='1'>
+		<EsdlElement name='TpSwapNodeResult' type='bool'/>
+	</EsdlResponse>
+	<EsdlRequest name='TpXMLFileRequest' nil_remove='1'>
+		<EsdlElement name='Name' type='string'/>
+	</EsdlRequest>
+	<EsdlResponse name='TpXMLFileResponse' exceptions_inline='1'>
+		<EsdlElement name='thefile' type='binary' http_content='application/octet-stream'/>
+	</EsdlResponse>
+	<EsdlRequest name='TpLogFileRequest' nil_remove='1'>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='Type' type='string'/>
+		<EsdlElement name='LastHours' type='int'/>
+		<EsdlElement name='StartDate' type='string' min_ver='1.05'/>
+		<EsdlElement name='EndDate' type='string' min_ver='1.05'/>
+		<EsdlElement name='FirstRows' type='int' min_ver='1.05'/>
+		<EsdlElement name='LastRows' type='int' min_ver='1.05'/>
+		<EsdlElement name='FilterType' type='int' default='0' min_ver='1.05'/>
+		<EsdlElement name='Reversely' type='bool' default='0' min_ver='1.05'/>
+		<EsdlElement name='Zip' type='bool' default='0' min_ver='1.05'/>
+		<EsdlElement name='PageNumber' type='int' default='0' min_ver='1.05'/>
+		<EsdlElement name='LoadData' type='bool' default='0' min_ver='1.05'/>
+		<EsdlElement name='IncludeLogFieldNames' type='bool' default='1' min_ver='1.29'/>
+	</EsdlRequest>
+	<EsdlResponse name='TpLogFileResponse' exceptions_inline='1'>
+		<EsdlElement name='Name' type='string' min_ver='1.05'/>
+		<EsdlElement name='Type' type='string' min_ver='1.05'/>
+		<EsdlElement name='StartDate' type='string' min_ver='1.05'/>
+		<EsdlElement name='EndDate' type='string' min_ver='1.05'/>
+		<EsdlElement name='LastHours' type='int' min_ver='1.05'/>
+		<EsdlElement name='FirstRows' type='int' min_ver='1.05'/>
+		<EsdlElement name='LastRows' type='int' min_ver='1.05'/>
+		<EsdlElement name='Reversely' type='bool' min_ver='1.05'/>
+		<EsdlElement name='Zip' type='bool' min_ver='1.05'/>
+		<EsdlElement name='FilterType' type='int' min_ver='1.05'/>
+		<EsdlElement name='LogData' type='string' min_ver='1.05'/>
+		<EsdlElement name='HasDate' type='bool' default='1' min_ver='1.05'/>
+		<EsdlElement name='FileSize' type='int64' min_ver='1.05'/>
+		<EsdlElement name='PageFrom' type='int64' default='0' min_ver='1.05'/>
+		<EsdlElement name='PageTo' type='int64' min_ver='1.05'/>
+		<EsdlElement name='PageNumber' type='int' default='0' min_ver='1.05'/>
+		<EsdlElement name='PrevPage' type='int' default='-1' min_ver='1.05'/>
+		<EsdlElement name='NextPage' type='int' default='-1' min_ver='1.05'/>
+		<EsdlElement name='TotalPages' type='int' min_ver='1.06'/>
+		<EsdlElement name='AcceptLanguage' type='string' min_ver='1.20'/>
+		<EsdlArray name='LogFieldNames'  type='string' min_ver='1.29'/>
+	</EsdlResponse>
+	<EsdlRequest name='SystemLogRequest' nil_remove='1'>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='Type' type='string'/>
+		<EsdlElement name='Zip' type='int'/>
+	</EsdlRequest>
+	<EsdlResponse name='SystemLogResponse' exceptions_inline='1'>
+		<EsdlElement name='thefile' type='binary' http_content='application/octet-stream'/>
+	</EsdlResponse>
+	<EsdlRequest name='TpGetComponentFileRequest'>
+		<EsdlElement name='CompType' type='string'/>
+		<EsdlElement name='CompName' type='string'/>
+		<EsdlElement name='NetAddress' type='string'/>
+		<EsdlElement name='Directory' type='string'/>
+		<EsdlElement name='FileType' type='string'/>
+		<EsdlElement name='OsType' type='int'/>
+		<EsdlElement name='PlainText' type='string'/>
+	</EsdlRequest>
+	<EsdlResponse name='TpGetComponentFileResponse' exceptions_inline='1'>
+		<EsdlElement name='FileContents' type='binary' http_content='application/octet-stream'/>
+	</EsdlResponse>
+	<EsdlRequest name='TpThorStatusRequest'>
+		<EsdlElement name='Name' type='string'/>
+	</EsdlRequest>
+	<EsdlResponse name='TpThorStatusResponse' encode='0' exceptions_inline='1'>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='Queue' type='string'/>
+		<EsdlElement name='Group' type='string'/>
+		<EsdlElement name='ThorMasterIPAddress' type='string'/>
+		<EsdlElement name='Port' type='int'/>
+		<EsdlElement name='StartTime' type='string'/>
+		<EsdlElement name='LogFile' type='string'/>
+		<EsdlElement name='Wuid' type='string'/>
+		<EsdlElement name='Graph' type='string'/>
+		<EsdlElement name='SubGraph' type='int'/>
+		<EsdlElement name='SubGraphDuration' type='int'/>
+		<EsdlElement name='AutoRefresh' type='int'/>
+	</EsdlResponse>
+	<EsdlRequest name='TpGetServicePluginsRequest'>
+	</EsdlRequest>
+	<EsdlResponse name='TpGetServicePluginsResponse' encode='0' exceptions_inline='1'>
+		<EsdlArray name='Plugins'  type='TpEspServicePlugin' item_tag='Plugin'/>
+	</EsdlResponse>
+	<EsdlRequest name='TpDropZoneQueryRequest'>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='ECLWatchVisibleOnly' type='bool'/>
+	</EsdlRequest>
+	<EsdlResponse name='TpDropZoneQueryResponse' exceptions_inline='1' nil_remove='1'>
+		<EsdlArray name='TpDropZones'  type='TpDropZone'/>
+	</EsdlResponse>
+	<EsdlRequest name='TpListLogFilesRequest'>
+		<EsdlElement name='NetworkAddress' type='string'/>
+		<EsdlElement name='Path' type='string'/>
+	</EsdlRequest>
+	<EsdlStruct name='LogFileStruct'>
+		<EsdlElement name='Name' type='string'/>
+		<EsdlElement name='Path' type='string'/>
+		<EsdlElement name='Host' type='string'/>
+		<EsdlElement name='IsDir' type='bool'/>
+		<EsdlElement name='FileSize' type='int64'/>
+		<EsdlElement name='Modifiedtime' type='string'/>
+	</EsdlStruct>
+	<EsdlResponse name='TpListLogFilesResponse' exceptions_inline='1'>
+		<EsdlArray name='Files'  type='LogFileStruct'/>
+	</EsdlResponse>
+	<EsdlRequest name='WsTopologyPingRequest'>
+	</EsdlRequest>
+	<EsdlResponse name='WsTopologyPingResponse'>
+	</EsdlResponse>
+		<EsdlService name='WsTopology'  exceptions_inline='./smc_xslt/exceptions.xslt' cache_group='ESPWsTP' generated_client_version='0.0' version='1.32' noforms='1' auth_feature='DEFERRED'>
+	<EsdlMethod name='Ping' request_type='WsTopologyPingRequest' response_type='WsTopologyPingResponse'  auth_feature='none'/>
+	<EsdlMethod name='SystemLog' request_type='SystemLogRequest' response_type='SystemLogResponse' />
+	<EsdlMethod name='TpClusterInfo' request_type='TpClusterInfoRequest' response_type='TpClusterInfoResponse'  resp_xsl_default='/esp/xslt/cluster_info.xslt' cache_global='1' cache_seconds='180'/>
+	<EsdlMethod name='TpClusterQuery' request_type='TpClusterQueryRequest' response_type='TpClusterQueryResponse'  resp_xsl_default='/esp/xslt/topology.xslt' cache_global='1' cache_seconds='180'/>
+	<EsdlMethod name='TpDropZoneQuery' request_type='TpDropZoneQueryRequest' response_type='TpDropZoneQueryResponse'  min_ver='1.26' cache_global='1' cache_seconds='180'/>
+	<EsdlMethod name='TpGetComponentFile' request_type='TpGetComponentFileRequest' response_type='TpGetComponentFileResponse' />
+	<EsdlMethod name='TpGetServicePlugins' request_type='TpGetServicePluginsRequest' response_type='TpGetServicePluginsResponse'  cache_global='1' cache_seconds='180'/>
+	<EsdlMethod name='TpGroupQuery' request_type='TpGroupQueryRequest' response_type='TpGroupQueryResponse'  cache_global='1' cache_seconds='180'/>
+	<EsdlMethod name='TpListLogFiles' request_type='TpListLogFilesRequest' response_type='TpListLogFilesResponse'  min_ver='1.32' cache_global='1' cache_seconds='180'/>
+	<EsdlMethod name='TpListTargetClusters' request_type='TpListTargetClustersRequest' response_type='TpListTargetClustersResponse'  cache_global='1' cache_seconds='180'/>
+	<EsdlMethod name='TpLogFile' request_type='TpLogFileRequest' response_type='TpLogFileResponse'  resp_xsl_default='/esp/xslt/tplog.xslt'/>
+	<EsdlMethod name='TpLogFileDisplay' request_type='TpLogFileRequest' response_type='TpLogFileResponse'  resp_xsl_default='/esp/xslt/tplogdisplay.xslt'/>
+	<EsdlMethod name='TpLogicalClusterQuery' request_type='TpLogicalClusterQueryRequest' response_type='TpLogicalClusterQueryResponse'  cache_global='1' cache_seconds='180'/>
+	<EsdlMethod name='TpMachineInfo' request_type='TpMachineInfoRequest' response_type='TpMachineInfoResponse'  min_ver='1.25' cache_global='1' cache_seconds='180'/>
+	<EsdlMethod name='TpMachineQuery' request_type='TpMachineQueryRequest' response_type='TpMachineQueryResponse'  resp_xsl_default='/esp/xslt/machines.xslt' cache_global='1' cache_seconds='180'/>
+	<EsdlMethod name='TpServiceQuery' request_type='TpServiceQueryRequest' response_type='TpServiceQueryResponse'  resp_xsl_default='/esp/xslt/services.xslt' cache_global='1' cache_seconds='180'/>
+	<EsdlMethod name='TpSetMachineStatus' request_type='TpSetMachineStatusRequest' response_type='TpSetMachineStatusResponse'  clear_cache_group='1'/>
+	<EsdlMethod name='TpSwapNode' request_type='TpSwapNodeRequest' response_type='TpSwapNodeResponse'  clear_cache_group='1'/>
+	<EsdlMethod name='TpTargetClusterQuery' request_type='TpTargetClusterQueryRequest' response_type='TpTargetClusterQueryResponse'  resp_xsl_default='/esp/xslt/targetclusters.xslt' cache_global='1' cache_seconds='180'/>
+	<EsdlMethod name='TpThorStatus' request_type='TpThorStatusRequest' response_type='TpThorStatusResponse'  resp_xsl_default='/esp/xslt/thor_status.xslt' cache_global='1' cache_seconds='180'/>
+	<EsdlMethod name='TpXMLFile' request_type='TpXMLFileRequest' response_type='TpXMLFileResponse'  cache_seconds='180'/>
+		</EsdlService></esxdl>
