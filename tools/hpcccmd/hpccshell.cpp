@@ -1,19 +1,21 @@
-
-
+#include <iostream>
+#include "jargv.hpp"
+#include "jstring.hpp"
+#include "hpccshell.hpp"
+#include "jargv.hpp"
 using namespace std;
 
-// void CLIHPCC(int argc, const char* argv[])
-// {
-//     // InitModuleObjects();
-//     // auto arg = ArgvIterator(argc, argv);
+hpccShell::hpccShell(int argc, const char* argv[])
+{
+    
+    auto arg = ArgvIterator(argc, argv);
 
-//     // StringAttr someVal = "X";
+    StringAttr methodName;
+    bool help;
 
-//     // cout << arg.isValid();
 
-//     // if(arg.matchFlag(someVal,"X"))
-//     // {
-//     //     cout << "match" << endl;
-//     // }
-
-// }
+    if(arg.matchOption(methodName,"WsTopology"))
+    {
+        
+    }
+}

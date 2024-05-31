@@ -16,6 +16,13 @@ include_directories (
     ${HPCC_SOURCE_DIR}/system/security/shared
     ${HPCC_SOURCE_DIR}/tools/esdlcomp
     ${HPCC_SOURCE_DIR}/tools/esdlcmd-xml
+    ${HPCC_SOURCE_DIR}/common/dllserver
+    ${CMAKE_BINARY_DIR}
+    ${CMAKE_BINARY_DIR}/oss
+    ${HPCC_SOURCE_DIR}/fs/dafsclient
+    ${HPCC_SOURCE_DIR}/system/mp 
+    ${HPCC_SOURCE_DIR}/rtl/eclrtl 
+    ${HPCC_SOURCE_DIR}/dali/base 
 )
 set (  SRCS
        hpcccmd.cpp
