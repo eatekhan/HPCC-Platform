@@ -1,16 +1,15 @@
 #include <cstring>
 #include <iostream>
 #include "esdl_def.hpp"
-#include "jargv.hpp"
 #include "jprop.hpp"
 #include "esdl_def.hpp"
 #include "esdl_def_helper.hpp"
 #include "jstring.hpp"
-#include "hpccshell.hpp"
 #include <string>
 #include <vector>
 #include <stdio.h>
-#include "thorplugin.hpp"
+#include "hpcccmd.hpp"
+#include "hpccshell.hpp"
 
 using namespace std;
 class ConcreteEsdlDefReporter : public EsdlDefReporter
@@ -22,161 +21,143 @@ protected:
     }
 };
 
-
 IEsdlDefReporter* createConcreteEsdlDefReporter()
 {
     return new ConcreteEsdlDefReporter();
 }
 
 
+hpccInit::hpccInit() {
+    InitModuleObjects();
+    queryStderrLogMsgHandler()->setMessageFields(0);
+        
+    esdlDef.set(createEsdlDefinition(nullptr, createConcreteEsdlDefReporter));
+    defHelper.setown(createEsdlDefinitionHelper());
+    IEsdlDefReporter* reporter = esdlDef->queryReporter();
+    using TraceFlags = IEsdlDefReporter::Flags;
+    
+    TraceFlags traceFlags = IEsdlDefReporter::ReportDisaster;
+    reporter->setFlags(traceFlags, true);
 
-void traverseProps(Owned<IEsdlDefinition> &esdlDef, const char* reqRes)
+}
+
+void hpccInit::getFileNames(vector<string> &methodsList) 
 {
-    // "TpSetMachineStatusRequest"
+    const char * mask = "*" ".xml";
+    Owned<IFile> esdlDir = createIFile("/opt/HPCCSystems/componentfiles/esdl_files/");
+    
+    Owned<IDirectoryIterator> esdlFiles = esdlDir->directoryFiles(mask, false, false);
+    ForEach(*esdlFiles) 
+    {
+        const char *thisPlugin = esdlFiles->query().queryFilename();
+        methodsList.push_back(thisPlugin);
+    }
+    return;
+}
+
+void hpccInit::traverseProps(const char* reqRes) 
+{
     auto myStruct = esdlDef->queryStruct(reqRes);
-    cout << myStruct->queryName() <<endl;
+    cout << myStruct->queryName() << endl;
 
     auto structChildren = myStruct->getChildren();
-    structChildren->first() ;
+   
 
-    for(;structChildren->isValid();structChildren->next())
+    for(structChildren->first();structChildren->isValid();structChildren->next()) 
     {
         auto &tempQuery = structChildren->query();
-        //cout << tempQuery.queryName() << endl;
         auto *tempQueryProps = tempQuery.getProps();
         tempQueryProps->first();
-        for(;tempQueryProps->isValid();tempQueryProps->next())
+        for(;tempQueryProps->isValid();tempQueryProps->next()) 
         {
             cout << tempQueryProps->getPropKey() << " " << tempQueryProps->queryPropValue() << endl;
         }
     }
 }
 
-void getAllMethods(Owned<IEsdlDefinition> &esdlDef, const char* serviceName, const char* methodName, bool &flagSuccess)
+void hpccInit::getAllMethods(const char* serviceName, const char* methodName, bool &flagSuccess) 
 {
-    auto *esdlServ = esdlDef->queryService(serviceName); 
-    if (!esdlServ)
+    auto *esdlServ = esdlDef->queryService(serviceName);
+    if (!esdlServ) 
     {
-        std::cerr << "Service not found: " << serviceName << std::endl;
+        cerr << "Service not found: " << serviceName << endl;
         return;
     }
 
     try {
         auto *methodIter = esdlServ->getMethods();
-        if (!methodIter)
+        if (!methodIter) 
         {
-            std::cerr << "No methods found for service: " << serviceName << std::endl;
+            cerr << "No methods found for service: " << serviceName << endl;
             return;
         }
 
-        for (methodIter->first(); methodIter->isValid(); methodIter->next())
+        for (methodIter->first(); methodIter->isValid(); methodIter->next()) 
         {
             auto &tempMethod = methodIter->query();
-            if (strcmp(tempMethod.queryName(), methodName) == 0)
+            if (strcmp(tempMethod.queryName(), methodName) == 0) 
             {
-                traverseProps(esdlDef, tempMethod.queryRequestType());
+                traverseProps(tempMethod.queryRequestType());
                 flagSuccess = true;
             }
         }
-    }
-    catch (const std::exception &e) {
-        std::cerr << "Caught an exception: " << e.what() << std::endl;
-    }
-    catch (...) {
-        std::cerr << "Caught an unknown exception!" << std::endl;
+    } 
+    catch (const std::exception &e) 
+    {
+        cerr << "Caught an exception: " << e.what() << endl;
+    } 
+    catch (...) 
+    {
+        cerr << "Caught an unknown exception!" << endl;
     }
 }
 
 
-void getFileNames(vector<string> &methodsList)
-{
-    const char * mask = "*" ".xml";
-    //vector<const char*> fileNamesVector;
 
-    Owned<IFile> esdlDir = createIFile("/opt/HPCCSystems/componentfiles/esdl_files/");
-    Owned<IDirectoryIterator> esdlFiles = esdlDir->directoryFiles(mask,false,false);
-    ForEach(*esdlFiles)
-    {
-        const char *thisPlugin = esdlFiles->query().queryFilename();
-       // cout << thisPlugin << endl;
-        methodsList.push_back(thisPlugin);
-    }
-    return;
-} 
-
-
-void esdlDefInit(Owned<IEsdlDefinition> esdlDef, const char* serviceName, const char* methodName)
+void hpccInit::esdlDefInit(const char* serviceName, const char* methodName) 
 {
     Owned<IFile> serviceDefFile;
-
     vector<string> fileList;
     getFileNames(fileList);
-    for(const auto& file: fileList)
+
+    for(const auto& file: fileList) 
     {
         cout << file << endl;
         const char* fileNameChar = file.c_str();
-    
-        serviceDefFile.setown( createIFile(fileNameChar));
 
+        serviceDefFile.setown(createIFile(fileNameChar));
 
-        if(serviceDefFile->exists())
+        if(serviceDefFile->exists()) 
         {
-            if( serviceDefFile->size() > 0 )
+            if(serviceDefFile->size() > 0) 
             {
-                esdlDef->addDefinitionsFromFile( serviceDefFile->queryFilename() );
+                esdlDef->addDefinitionsFromFile(serviceDefFile->queryFilename());
+            } else 
+            {
+                cerr << "File size zero" << endl;
             }
         }
-        else
+        else 
         {
-            throw( MakeStringException(0, "ESDL definition file source %s is not a file", "sourceFileName") );
+            throw(MakeStringException(0, "ESDL definition file source %s is not a file", "sourceFileName"));
         }
+        
+
         bool flagSuccess = false;
-        getAllMethods(esdlDef, serviceName, methodName, flagSuccess);
-        if(flagSuccess)
-        {
+        getAllMethods(serviceName, methodName, flagSuccess);
+        if(flagSuccess) {
             break;
         }
     }
-  
 }
-
-
-
-
 
 int main(int argc, const char* argv[])
 {
-    InitModuleObjects();
-    // getFileNames();
-    // esdlDefInit();
-    // hpccShell myShell(argc, argv);
-    ArgvIterator args(argc, argv);
-    StringAttr methodName;
-    bool help;
+    hpccInit myobj;
 
 
-    Owned<IEsdlDefinition> esdlDef;
-    Owned<IEsdlDefinitionHelper> defHelper;
+    // myobj.esdlDefInit("WsWorkunits", "WUAbort");
 
-
-    esdlDef.set(createEsdlDefinition(nullptr, createConcreteEsdlDefReporter));
-    defHelper.setown(createEsdlDefinitionHelper());
-    IEsdlDefReporter* reporter = esdlDef->queryReporter();
-    //reporter->setFlags(Flags flags, bool state)
-    IEsdlDefReporter::Flags traceFlags = IEsdlDefReporter::ReportErrorClass;
-
-
-
-    if(args.matchOption(methodName,"WsTopology"))
-    {
-        const char* serviceName = args.query();
-        const char* methodName = methodName;
-        esdlDefInit(esdlDef, "WsWorkunits", "WUAbort");
-    }
-    if(args.matchOption(methodName,"WSDali"))
-    {
-        
-    }
-
+    // hpccShell myshell(argc,argv);
     return 0;
 }

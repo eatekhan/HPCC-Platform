@@ -1,21 +1,29 @@
-#include <iostream>
+// #include "hpcccmd.hpp"
 #include "jargv.hpp"
 #include "jstring.hpp"
 #include "hpccshell.hpp"
 #include "jargv.hpp"
 using namespace std;
 
-hpccShell::hpccShell(int argc, const char* argv[])
+
+void hpccShell::parseCmdOptions(hpccInit myobj, int argc, const char* argv[])
 {
-    
-    auto arg = ArgvIterator(argc, argv);
-
-    StringAttr methodName;
-    bool help;
-
-
-    if(arg.matchOption(methodName,"WsTopology"))
+    bool boolFlag;
+    while(args.isValid())
     {
-        
+        if(args.matchFlag(boolFlag, "--help"))
+        {
+            if(boolFlag && argc==4)
+            {
+                myobj.esdlDefInit(argv[1], argv[2]);
+            }
+        }
+        args.next();
     }
+}
+
+hpccShell::hpccShell(int argc, const char* argv[]) : args(argc, argv)
+{
+    hpccInit myobj;
+    parseCmdOptions(myobj, argc, argv);
 }
