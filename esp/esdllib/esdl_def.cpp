@@ -1274,6 +1274,75 @@ public:
     }
 
 };
+// interface IEsdlDefServiceIterator : extends IInterface
+// {
+//     virtual bool        first(void)=0;
+//     virtual bool        next(void)=0;
+//     virtual bool        isValid(void)=0;
+//     virtual unsigned    getFlags(void)=0;
+//     virtual IEsdlDefService& query()=0;
+//     //virtual IEsdlDefObjectIterator* queryBaseTypesIterator()=0;
+// };
+
+class EsdlDefServiceArrayIterator : public CInterface, implements IEsdlDefServiceIterator
+{
+private:
+      ESDLServiceArray & array;
+      aindex_t             cur;
+
+public:
+    IMPLEMENT_IINTERFACE;
+
+    EsdlDefServiceArrayIterator(ESDLServiceArray &a) : array(a)
+    {
+    }
+
+    bool        first(void)             { cur = 0; return isValid(); }
+    bool        isValid(void)           { return array.isItem(cur); }
+    IEsdlDefService &query()                { assertex(isValid()); return array.item(cur); }
+    bool        hasNext(void)           { return array.isItem(cur+1); }
+    bool        hasPrev(void)           { return array.isItem(cur-1); }
+    bool        last(void)              { cur = array.ordinality()-1; return isValid(); }
+    bool        next(void)              { ++cur; return isValid(); }
+    bool        prev(void)              { --cur; return isValid(); }
+    bool        select(aindex_t seek)   { cur = seek; return isValid(); }
+
+   
+    unsigned getFlags() { return 0; }
+    IEsdlDefObjectIterator* queryBaseTypesIterator()
+    {
+        return NULL;
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 typedef MapStringTo<bool> AddedHash;
 
@@ -1325,6 +1394,12 @@ public:
                     edo->Release(); //ForceRelease();
             }
         }
+    }
+
+    EsdlDefServiceArrayIterator* getServiceIterator()
+    {
+        return new EsdlDefServiceArrayIterator(services);
+        
     }
 
     void setReporter(IEsdlDefReporter* _reporter) override
