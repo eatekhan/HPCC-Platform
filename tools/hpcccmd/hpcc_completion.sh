@@ -9,15 +9,15 @@ function _hpcc {
 
 
     COMPREPLY=()
-    local SERVICE_NAME=${COMP_WORDS[COMP_CWORD]}
+    local CURRENT_WORD=${COMP_WORDS[COMP_CWORD]}
     local METHOD_NAME=${COMP_WORDS[1]}
 
     if [ "${COMP_CWORD}"  -eq 1 ]
     then
-        COMPREPLY=($( compgen -W "$AVAILABLE_SERVICES" -- $SERVICE_NAME ))
+        COMPREPLY=($( compgen -W "$AVAILABLE_SERVICES" -- $CURRENT_WORD ))
     elif [[ -n "${METHOD_MAPPING[$METHOD_NAME]}" ]]
     then
-        COMPREPLY=($( compgen -W "${METHOD_MAPPING[$METHOD_NAME]}" -- $SERVICE_NAME ))
+        COMPREPLY=($( compgen -W "${METHOD_MAPPING[$METHOD_NAME]}" -- $CURRENT_WORD ))
     fi
 
 }
