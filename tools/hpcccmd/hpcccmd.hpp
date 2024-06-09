@@ -23,16 +23,18 @@ private:
     void traverseProps(const char* reqRes);
     void getAllMethods(const char* serviceName, const char* methodName, bool &flagSuccess);
     void loadAllServices();
+    void loadAllMethods(const char* serviceName);
     bool checkValidService(const char* serviceName);
     bool checkValidMethod(const char* methodName, const char* serviceName);
 
-    void printAllServices();
-    void printAllMethods(const char* serviceName);
+    
     
 
 public:
     hpccInit();
     void esdlDefInit(const char* serviceName, const char* methodName);
+    void printAllServices();
+    void printAllMethods(const char* serviceName);
 };
 
 #endif // HPCC_INIT_HPP

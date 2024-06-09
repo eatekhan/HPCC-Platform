@@ -3,7 +3,8 @@
 #include "jstring.hpp"
 #include "hpccshell.hpp"
 #include "jargv.hpp"
-using namespace std;
+#include <iostream>
+
 
 
 void hpccShell::parseCmdOptions(hpccInit myobj, int argc, const char* argv[])
@@ -16,6 +17,27 @@ void hpccShell::parseCmdOptions(hpccInit myobj, int argc, const char* argv[])
             if(boolFlag && argc==4)
             {
                 myobj.esdlDefInit(argv[1], argv[2]);
+            }
+        }
+        if(args.matchFlag(boolFlag, "--printServices"))
+        {
+            if(boolFlag)
+            {
+               
+                myobj.printAllServices();
+            }
+        }
+        if(args.matchFlag(boolFlag, "--printMethods"))
+        {
+            if(boolFlag)
+            {
+                if(argc < 3)
+                {
+                    std::cout << "Illegal Syntax" << std::endl;
+                    return;
+                }
+               
+                myobj.printAllMethods(argv[1]);
             }
         }
         args.next();

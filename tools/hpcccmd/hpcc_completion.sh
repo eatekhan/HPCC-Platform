@@ -1,26 +1,31 @@
 #!/bin/bash
 
 function _hpcc {
-    local AVAILABLE_SERVICES="WsTopology WsExample"
+    local AVAILABLE_SERVICES=$(/home/khan/HPCC-Platform/build/Debug/bin/hpcc --printServices)
 
-    declare -A METHOD_MAPPING=(
-        ["WsTopology"]="TpMachineQuery Ping"
-    )
+    
+    
 
 
     COMPREPLY=()
     local CURRENT_WORD=${COMP_WORDS[COMP_CWORD]}
-    local METHOD_NAME=${COMP_WORDS[1]}
+    local SERVICE_NAME=${COMP_WORDS[1]}
+
+    
 
     if [ "${COMP_CWORD}"  -eq 1 ]
     then
         COMPREPLY=($( compgen -W "$AVAILABLE_SERVICES" -- $CURRENT_WORD ))
-    elif [[ -n "${METHOD_MAPPING[$METHOD_NAME]}" ]]
+    elif [[ "${COMP_CWORD}" -eq 2 ]]
     then
-        COMPREPLY=($( compgen -W "${METHOD_MAPPING[$METHOD_NAME]}" -- $CURRENT_WORD ))
+        local METHODS=$(/home/khan/HPCC-Platform/build/Debug/bin/hpcc $SERVICE_NAME --printMethods)
+        if [ -n "$METHODS" ]; then
+            COMPREPLY=($(compgen -W "$METHODS" -- $CURRENT_WORD))
+        fi
     fi
 
 }
 
 
-complete -F _hpcc hpcc
+
+complete -F _hpcc ./hpcc

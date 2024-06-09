@@ -31,6 +31,7 @@ IEsdlDefReporter* createConcreteEsdlDefReporter()
 hpccInit::hpccInit() {
     InitModuleObjects();
     queryStderrLogMsgHandler()->setMessageFields(0);
+    queryLogMsgManager()->removeMonitor(queryStderrLogMsgHandler());
         
     esdlDef.set(createEsdlDefinition(nullptr, createConcreteEsdlDefReporter));
     defHelper.setown(createEsdlDefinitionHelper());
@@ -54,7 +55,7 @@ hpccInit::hpccInit() {
 
     for(const auto& file: fileList) 
     {
-        cout << file << endl;
+        //cout << file << endl;
         const char* fileNameChar = file.c_str();
 
         serviceDefFile.setown(createIFile(fileNameChar));
@@ -82,6 +83,7 @@ hpccInit::hpccInit() {
         //     break;
         // }
     }
+    loadAllServices();
 
 }
 
@@ -186,6 +188,11 @@ bool hpccInit::checkValidService(const char* serviceName)
 bool hpccInit::checkValidMethod(const char* methodName, const char* serviceName)
 {
     auto *esdlServ = esdlDef->queryService(serviceName);
+    if (!esdlServ) 
+    {
+        cerr << "No Service: printAllMethods" << endl;
+        return false;
+    }
 
     auto *methodIter = esdlServ->getMethods();
     if (!methodIter) 
@@ -205,8 +212,28 @@ bool hpccInit::checkValidMethod(const char* methodName, const char* serviceName)
     }
     cout << "Invalid Method" << endl;
     return false;
-    
+}
 
+void hpccInit::loadAllMethods(const char* serviceName)
+{
+    auto *esdlServ = esdlDef->queryService(serviceName);
+    if (!esdlServ) 
+    {
+        cerr << "No Service: loadAllMethods" << endl;
+        return;
+    }
+
+    auto *methodIter = esdlServ->getMethods();
+    if (!methodIter) 
+    {
+        cerr << "No methods found :loadAllMethods " << endl;
+        return;
+    }
+    for (methodIter->first(); methodIter->isValid(); methodIter->next()) 
+    {
+        auto &tempMethod = methodIter->query();
+        allMethodsList.push_back(tempMethod.queryMethodName());
+    }
 }
 
 void hpccInit::printAllServices()
@@ -240,58 +267,42 @@ void hpccInit::printAllMethods(const char* serviceName)
 
 }
 
+
 void hpccInit::esdlDefInit(const char* serviceName, const char* methodName) 
 {
-    // Owned<IFile> serviceDefFile;
-    // vector<string> fileList;
-    // getFileNames(fileList);
-
-    // for(const auto& file: fileList) 
-    // {
-    //     cout << file << endl;
-    //     const char* fileNameChar = file.c_str();
-
-    //     serviceDefFile.setown(createIFile(fileNameChar));
-
-    //     if(serviceDefFile->exists()) 
-    //     {
-    //         if(serviceDefFile->size() > 0) 
-    //         {
-    //             esdlDef->addDefinitionsFromFile(serviceDefFile->queryFilename());
-    //         } else 
-    //         {
-    //             cerr << "File size zero" << endl;
-    //         }
-    //     }
-    //     else 
-    //     {
-    //         throw(MakeStringException(0, "ESDL definition file source %s is not a file", "sourceFileName"));
-    //     }
-        
-        
-       
-    //     // bool flagSuccess = false;
-    //     // getAllMethods(serviceName, methodName, flagSuccess);
-    //     // if(flagSuccess) {
-    //     //     break;
-    //     // }
-    // }
+    
     loadAllServices();
-    checkValidService("WsTopology");
-    checkValidMethod( "TpClusterInfo", "WsTopology");
+    loadAllMethods(serviceName);
+    checkValidService(serviceName);
+    checkValidMethod(methodName, serviceName);
 
-    printAllServices();
+    auto *esdlServ = esdlDef->queryService(serviceName);
+    auto *methodIter = esdlServ->getMethods();
+    // bool flagSuccess = false;
+    for (methodIter->first(); methodIter->isValid(); methodIter->next()) 
+    {
+        auto &tempMethod = methodIter->query();
+        if (strcmp(tempMethod.queryName(), methodName) == 0) 
+        {
+            traverseProps(tempMethod.queryRequestType());
+            traverseProps(tempMethod.queryResponseType());
+            // flagSuccess = true;
+        }
+    }
+    
+
+    //printAllServices();
 }
 
 
 int main(int argc, const char* argv[])
 {
-    hpccInit myobj;
+    // hpccInit myobj;
     //myobj.esdlDefInit("x","y");
 
 
     // myobj.esdlDefInit("WsWorkunits", "WUAbort");
 
-    //  hpccShell myshell(argc,argv);
+    hpccShell myshell(argc,argv);
     return 0;
 }
