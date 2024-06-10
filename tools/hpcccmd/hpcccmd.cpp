@@ -5,7 +5,9 @@
 #include "jprop.hpp"
 #include "esdl_def.hpp"
 #include "esdl_def_helper.hpp"
+#include "jscm.hpp"
 #include "jstring.hpp"
+#include <memory>
 #include <string>
 #include <vector>
 #include <stdio.h>
@@ -31,23 +33,13 @@ IEsdlDefReporter* createConcreteEsdlDefReporter()
 hpccInit::hpccInit() {
     InitModuleObjects();
     queryStderrLogMsgHandler()->setMessageFields(0);
-    queryLogMsgManager()->removeMonitor(queryStderrLogMsgHandler());
-        
-    esdlDef.set(createEsdlDefinition(nullptr, createConcreteEsdlDefReporter));
+    queryLogMsgManager()->removeMonitor(queryStderrLogMsgHandler());   
+    esdlDef.setown(createEsdlDefinition(nullptr, createConcreteEsdlDefReporter));
     defHelper.setown(createEsdlDefinitionHelper());
     IEsdlDefReporter* reporter = esdlDef->queryReporter();
     using TraceFlags = IEsdlDefReporter::Flags;
-    
     TraceFlags traceFlags = IEsdlDefReporter::ReportDisaster;
     reporter->setFlags(traceFlags, true);
-
-
-
-
-
-
-
-
 
     Owned<IFile> serviceDefFile;
     vector<string> fileList;
@@ -74,14 +66,6 @@ hpccInit::hpccInit() {
         {
             throw(MakeStringException(0, "ESDL definition file source %s is not a file", "sourceFileName"));
         }
-        
-        
-       
-        // bool flagSuccess = false;
-        // getAllMethods(serviceName, methodName, flagSuccess);
-        // if(flagSuccess) {
-        //     break;
-        // }
     }
     loadAllServices();
 
@@ -103,71 +87,21 @@ void hpccInit::getFileNames(vector<string> &methodsList)
 
 void hpccInit::traverseProps(const char* reqRes) 
 {
-    auto myStruct = esdlDef->queryStruct(reqRes);
+    IEsdlDefStruct* myStruct = esdlDef->queryStruct(reqRes);
     cout << myStruct->queryName() << endl;
 
-    auto structChildren = myStruct->getChildren();
+    Owned<IEsdlDefObjectIterator> structChildren = myStruct->getChildren();
    
 
     for(structChildren->first();structChildren->isValid();structChildren->next()) 
     {
-        auto &tempQuery = structChildren->query();
-        auto *tempQueryProps = tempQuery.getProps();
-        tempQueryProps->first();
-        for(;tempQueryProps->isValid();tempQueryProps->next()) 
+        IEsdlDefObject &tempQuery = structChildren->query();
+        Owned<IPropertyIterator> tempQueryProps = tempQuery.getProps();
+        for(tempQueryProps->first();tempQueryProps->isValid();tempQueryProps->next()) 
         {
-            cout << tempQueryProps->getPropKey() << " " << tempQueryProps->queryPropValue() << endl;
+            cout << "\t" << tempQueryProps->getPropKey() << "=" << tempQueryProps->queryPropValue() << " ";
         }
-    }
-}
-
-void hpccInit::getAllMethods(const char* serviceName, const char* methodName, bool &flagSuccess) 
-{
-    auto *esdlServ = esdlDef->queryService(serviceName);
-    if (!esdlServ) 
-    {
-        cerr << "Service not found: " << serviceName << endl;
-        return;
-    }
-
-    try {
-        auto *methodIter = esdlServ->getMethods();
-        if (!methodIter) 
-        {
-            cerr << "No methods found for service: " << serviceName << endl;
-            return;
-        }
-
-        for (methodIter->first(); methodIter->isValid(); methodIter->next()) 
-        {
-            auto &tempMethod = methodIter->query();
-            if (strcmp(tempMethod.queryName(), methodName) == 0) 
-            {
-                traverseProps(tempMethod.queryRequestType());
-                flagSuccess = true;
-            }
-        }
-    } 
-    catch (const std::exception &e) 
-    {
-        cerr << "Caught an exception: " << e.what() << endl;
-    } 
-    catch (...) 
-    {
-        cerr << "Caught an unknown exception!" << endl;
-    }
-}
-
-
-void hpccInit::loadAllServices()
-{
-    auto serviceIter = esdlDef->getServiceIterator();
-    for(serviceIter->first();serviceIter->isValid();serviceIter->next())
-    {
-        auto &currentService = serviceIter->query();
-        const char* serviceName = currentService.queryName();
-        //cout << serviceName <<endl;
-        allServicesList.push_back(serviceName);
+        cout << endl;
     }
 }
 
@@ -187,7 +121,8 @@ bool hpccInit::checkValidService(const char* serviceName)
 
 bool hpccInit::checkValidMethod(const char* methodName, const char* serviceName)
 {
-    auto *esdlServ = esdlDef->queryService(serviceName);
+    IEsdlDefService *esdlServ = esdlDef->queryService(serviceName);
+
     if (!esdlServ) 
     {
         cerr << "No Service: printAllMethods" << endl;
@@ -214,16 +149,31 @@ bool hpccInit::checkValidMethod(const char* methodName, const char* serviceName)
     return false;
 }
 
+void hpccInit::loadAllServices()
+{
+    Owned<IEsdlDefServiceIterator> serviceIter = esdlDef->getServiceIterator();
+    for(serviceIter->first();serviceIter->isValid();serviceIter->next())
+    {
+        IEsdlDefService &currentService = serviceIter->query();
+        const char* serviceName = currentService.queryName();
+        //cout << serviceName <<endl;
+        allServicesList.push_back(serviceName);
+    }
+}
+
+
 void hpccInit::loadAllMethods(const char* serviceName)
 {
-    auto *esdlServ = esdlDef->queryService(serviceName);
+    IEsdlDefService *esdlServ = esdlDef->queryService(serviceName);
+    // Owned<IEsdlDefService> esdlServ = esdlDef->queryService(serviceName);
     if (!esdlServ) 
     {
         cerr << "No Service: loadAllMethods" << endl;
         return;
     }
 
-    auto *methodIter = esdlServ->getMethods();
+    // IEsdlDefMethodIterator *methodIter = esdlServ->getMethods();
+    Owned<IEsdlDefMethodIterator> methodIter = esdlServ->getMethods();
     if (!methodIter) 
     {
         cerr << "No methods found :loadAllMethods " << endl;
@@ -263,8 +213,6 @@ void hpccInit::printAllMethods(const char* serviceName)
         auto &tempMethod = methodIter->query();
         cout << tempMethod.queryMethodName() << endl;
     }
-
-
 }
 
 
@@ -273,12 +221,18 @@ void hpccInit::esdlDefInit(const char* serviceName, const char* methodName)
     
     loadAllServices();
     loadAllMethods(serviceName);
-    checkValidService(serviceName);
-    checkValidMethod(methodName, serviceName);
+    if(!checkValidService(serviceName))
+    {
+        return;
+    }
+    if(!checkValidMethod(methodName, serviceName))
+    {
+        return;
+    }
 
-    auto *esdlServ = esdlDef->queryService(serviceName);
+    IEsdlDefService *esdlServ = esdlDef->queryService(serviceName);
+
     auto *methodIter = esdlServ->getMethods();
-    // bool flagSuccess = false;
     for (methodIter->first(); methodIter->isValid(); methodIter->next()) 
     {
         auto &tempMethod = methodIter->query();
@@ -286,23 +240,13 @@ void hpccInit::esdlDefInit(const char* serviceName, const char* methodName)
         {
             traverseProps(tempMethod.queryRequestType());
             traverseProps(tempMethod.queryResponseType());
-            // flagSuccess = true;
         }
-    }
-    
-
-    //printAllServices();
+    }    
 }
 
 
 int main(int argc, const char* argv[])
 {
-    // hpccInit myobj;
-    //myobj.esdlDefInit("x","y");
-
-
-    // myobj.esdlDefInit("WsWorkunits", "WUAbort");
-
     hpccShell myshell(argc,argv);
     return 0;
 }
