@@ -7,7 +7,7 @@
 
 
 
-void hpccShell::parseCmdOptions(hpccInit myobj, int argc, const char* argv[])
+void hpccShell::parseCmdOptions(hpccInit &myobj, int argc, const char* argv[])
 {
     bool boolFlag;
     while(args.isValid())
@@ -47,5 +47,7 @@ void hpccShell::parseCmdOptions(hpccInit myobj, int argc, const char* argv[])
 hpccShell::hpccShell(int argc, const char* argv[]) : args(argc, argv)
 {
     hpccInit myobj;
+
+
     parseCmdOptions(myobj, argc, argv);
 }

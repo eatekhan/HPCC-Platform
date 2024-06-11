@@ -41,7 +41,7 @@ hpccInit::hpccInit() {
     TraceFlags traceFlags = IEsdlDefReporter::ReportDisaster;
     reporter->setFlags(traceFlags, true);
 
-    Owned<IFile> serviceDefFile;
+    
     vector<string> fileList;
     getFileNames(fileList);
 
@@ -99,7 +99,7 @@ void hpccInit::traverseProps(const char* reqRes)
         Owned<IPropertyIterator> tempQueryProps = tempQuery.getProps();
         for(tempQueryProps->first();tempQueryProps->isValid();tempQueryProps->next()) 
         {
-            cout << "\t" << tempQueryProps->getPropKey() << "=" << tempQueryProps->queryPropValue() << " ";
+            cout << "    " << tempQueryProps->getPropKey() << "=" << tempQueryProps->queryPropValue() << " ";
         }
         cout << endl;
     }
@@ -129,7 +129,8 @@ bool hpccInit::checkValidMethod(const char* methodName, const char* serviceName)
         return false;
     }
 
-    auto *methodIter = esdlServ->getMethods();
+    // IEsdlDefMethodIterator *methodIter = esdlServ->getMethods();
+    Owned<IEsdlDefMethodIterator> methodIter = esdlServ->getMethods();
     if (!methodIter) 
     {
         cerr << "No methods found for service: " << serviceName << endl;
@@ -232,7 +233,8 @@ void hpccInit::esdlDefInit(const char* serviceName, const char* methodName)
 
     IEsdlDefService *esdlServ = esdlDef->queryService(serviceName);
 
-    auto *methodIter = esdlServ->getMethods();
+    // IEsdlDefMethodIterator *methodIter = esdlServ->getMethods();
+    Owned<IEsdlDefMethodIterator> methodIter = esdlServ->getMethods();
     for (methodIter->first(); methodIter->isValid(); methodIter->next()) 
     {
         auto &tempMethod = methodIter->query();
@@ -241,12 +243,14 @@ void hpccInit::esdlDefInit(const char* serviceName, const char* methodName)
             traverseProps(tempMethod.queryRequestType());
             traverseProps(tempMethod.queryResponseType());
         }
-    }    
+    }
 }
 
 
 int main(int argc, const char* argv[])
 {
     hpccShell myshell(argc,argv);
+
+    
     return 0;
 }
