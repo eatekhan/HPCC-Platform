@@ -14,7 +14,7 @@
 
 class hpccInit {
 private:
-    Owned<IEsdlDefinition> esdlDef;
+    // Owned<IEsdlDefinition> esdlDef;
     Owned<IEsdlDefinitionHelper> defHelper;
     std::vector<const char*> allServicesList;
     std::vector<const char*> allMethodsList;
@@ -25,18 +25,26 @@ private:
     void getAllMethods(const char* serviceName, const char* methodName, bool &flagSuccess);
     void loadAllServices();
     void loadAllMethods(const char* serviceName);
-    bool checkValidService(const char* serviceName);
-    bool checkValidMethod(const char* methodName, const char* serviceName);
     
+    void printHelper(const char* props);
 
     
     
+protected:
+    Owned<IEsdlDefinition> esdlDef;
+    
+
+// hpcc serv method --Wuids=test,test2 --blocktillfinish=0
+// hpcc serv method --debugvalue (name:abc key:xyz)
 
 public:
+
     hpccInit();
     void esdlDefInit(const char* serviceName, const char* methodName);
     void printAllServices();
     void printAllMethods(const char* serviceName);
+    bool checkValidService(const char* serviceName);
+    bool checkValidMethod(const char* methodName, const char* serviceName);
 };
 
 #endif // HPCC_INIT_HPP

@@ -13,6 +13,8 @@
 #include <stdio.h>
 #include "hpcccmd.hpp"
 #include "hpccshell.hpp"
+#include "httpclient.hpp"
+#include "hpccservice.hpp"
 
 using namespace std;
 class ConcreteEsdlDefReporter : public EsdlDefReporter
@@ -85,6 +87,24 @@ void hpccInit::getFileNames(vector<string> &methodsList)
     return;
 }
 
+void hpccInit::printHelper(const char* props)
+{
+    IEsdlDefStruct* structComplexType = esdlDef->queryStruct(props);
+    Owned<IEsdlDefObjectIterator> structChildrenIterator = structComplexType->getChildren();
+
+    for(structChildrenIterator->first();structChildrenIterator->isValid();structChildrenIterator->next())
+    {
+       IEsdlDefObject &tempQuery = structChildrenIterator->query();
+       Owned<IPropertyIterator> tempQueryProps = tempQuery.getProps();
+       for(tempQueryProps->first();tempQueryProps->isValid();tempQueryProps->next()) 
+       {
+           const char* propKey = tempQueryProps->getPropKey();
+           cout << "\t\t" << propKey << " " << tempQueryProps->queryPropValue() << " ";
+       }
+       cout << endl; 
+    }
+}
+
 void hpccInit::traverseProps(const char* reqRes) 
 {
     IEsdlDefStruct* myStruct = esdlDef->queryStruct(reqRes);
@@ -99,7 +119,13 @@ void hpccInit::traverseProps(const char* reqRes)
         Owned<IPropertyIterator> tempQueryProps = tempQuery.getProps();
         for(tempQueryProps->first();tempQueryProps->isValid();tempQueryProps->next()) 
         {
-            cout << "    " << tempQueryProps->getPropKey() << "=" << tempQueryProps->queryPropValue() << " ";
+            const char* propKey = tempQueryProps->getPropKey();
+            cout << "\t" << propKey << "=" << tempQueryProps->queryPropValue() << " ";
+            if(strcmp(propKey, "complex_type")==0)
+            {
+                cout << endl;
+                printHelper(tempQueryProps->queryPropValue());
+            }
         }
         cout << endl;
     }
@@ -249,8 +275,16 @@ void hpccInit::esdlDefInit(const char* serviceName, const char* methodName)
 
 int main(int argc, const char* argv[])
 {
+    
+    InitModuleObjects();
+
+  
+
     hpccShell myshell(argc,argv);
 
     
+    
+    
     return 0;
 }
+
