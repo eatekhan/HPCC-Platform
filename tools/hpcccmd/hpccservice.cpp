@@ -1,4 +1,5 @@
 #include "hpccservice.hpp"
+#include "jptree.hpp"
 #include "jstring.hpp"
 #include <cstring>
 #include <iostream>
@@ -36,9 +37,23 @@ hpccService::hpccService(int argc, const char* argv[], const char* formArgs, con
     {
         httpclient->sendRequest("POST","application/x-www-form-urlencoded",req,res);
     }
+    else if(strcmp(reqType, "xml")==0)
+    {
+        httpclient->sendRequest("POST","text/xml",req,res);
+    }
     
     
-    cout << res << endl;
+    //cout << res << endl;
+    if(strcmp(resType, ".json") == 0)
+    {
+        auto jsonTree = createPTreeFromJSONString(res);
+        StringBuffer jsonRet;
+        toJSON(jsonTree, jsonRet);
+        cout << jsonRet;
+    }
+    else {
+        cout << res << endl;
+    }
 
 
     // cout << argv[1] << argv[2] << endl;
