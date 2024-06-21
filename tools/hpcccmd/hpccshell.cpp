@@ -262,9 +262,12 @@ void hpccShell::parseCmdOptions(hpccInit &myobj, int argc, const char* argv[])
     // }
 
 
-    bool hasServiceName=false, hasMethodName=false, hasDescribe=false;
+    bool hasValidService=false, hasValidMethod=false, hasDescribe=false;
     bool hasPrintService = false, hasPrintMethod = false;
     bool hasTarget = false, hasRequestType = false, hasResponseType = false;
+
+    const char* serviceName;
+    const char* methodName;
 
     StringAttr requestType, responseType, target;
 
@@ -285,7 +288,6 @@ void hpccShell::parseCmdOptions(hpccInit &myobj, int argc, const char* argv[])
         {
             break;
         }
-        cout << args.query() << endl;
         if(args.matchOption(target,"--target"))
         {
             hasTarget = true;
@@ -315,6 +317,20 @@ void hpccShell::parseCmdOptions(hpccInit &myobj, int argc, const char* argv[])
             // std::cout << reqStr << std::endl;
             continue;
         }
+        if(args.matchOption(username, "--u"))
+        {
+            hasUsername = true;
+            args.next();
+            // std::cout << reqStr << std::endl;
+            continue;
+        }
+        if(args.matchOption(password, "--p"))
+        {
+            hasPassword = true;
+            args.next();
+            // std::cout << reqStr << std::endl;
+            continue;
+        }
 
         args.next();
     }
@@ -337,9 +353,21 @@ void hpccShell::parseCmdOptions(hpccInit &myobj, int argc, const char* argv[])
     }
 
     bool isValidServiceAndMethod = argc > 3 && myobj.checkValidService(argv[1]) && myobj.checkValidMethod(argv[2], argv[1]);
+    if(isValidServiceAndMethod)
+    {
+        hasValidMethod = true;
+        hasValidService = true;
+        serviceName = argv[1];
+        methodName = argv[2];
+    }
 
     if(isValidServiceAndMethod)
     {
+        if(hasDescribe)
+        {
+            myobj.esdlDefInit(serviceName, methodName);
+            return;
+        }
         if(strcmp(requestType, "json")==0)
         {
             if(!hasReqStr)
@@ -350,8 +378,15 @@ void hpccShell::parseCmdOptions(hpccInit &myobj, int argc, const char* argv[])
             const char* formArgs = reqStr.str();
             const char* resType = ".json";
             const char* reqType = "json";
-             const char* targeturl = target.str();
-            hpccService myServ(argc, argv, formArgs, resType, reqType, targeturl);
+            const char* targeturl = target.str();
+
+
+            if(hasUsername && hasPassword)
+            {
+                hpccService myServ(serviceName, methodName, formArgs, resType, reqType, targeturl, username.str(), password.str());
+                return;
+            }
+            hpccService myServ(serviceName, methodName, formArgs, resType, reqType, targeturl);
             return;
         }
         else if(strcmp(requestType, "xml")==0)
@@ -364,7 +399,17 @@ void hpccShell::parseCmdOptions(hpccInit &myobj, int argc, const char* argv[])
             const char* formArgs = reqStr.str();
             const char* resType = ".xml";
             const char* reqType = "xml";
-            hpccService myServ(argc, argv, formArgs, resType, reqType);
+            const char* targeturl = target.str();
+
+
+            if(hasUsername && hasPassword)
+            {
+                hpccService myServ(serviceName, methodName, formArgs, resType, reqType, targeturl, username.str(), password.str());
+                return;
+            }
+            hpccService myServ(serviceName, methodName, formArgs, resType, reqType, targeturl);
+            
+            // hpccService myServ(argc, argv, formArgs, resType, reqType);
             return;
         }
         else if(strcmp(requestType, "form")==0)
@@ -382,8 +427,17 @@ void hpccShell::parseCmdOptions(hpccInit &myobj, int argc, const char* argv[])
             }
            
             const char* reqType = "form";
+            const char* targeturl = target.str();
+
+
+            if(hasUsername && hasPassword)
+            {
+                hpccService myServ(serviceName, methodName, formArgs, resType, reqType, targeturl, username.str(), password.str());
+                return;
+            }
+            hpccService myServ(serviceName, methodName, formArgs, resType, reqType, targeturl);
            
-            hpccService myServ(argc, argv, formArgs, resType, reqType);
+            // hpccService myServ(argc, argv, formArgs, resType, reqType);
             return;
         }
 

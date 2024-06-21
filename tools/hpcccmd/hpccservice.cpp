@@ -8,30 +8,37 @@
 
 using namespace std;
 
-hpccService::hpccService(int argc, const char* argv[], const char* formArgs, const char* resType, const char* reqType, const char* target, const char* username, const char* password){
+hpccService::hpccService(const char* serviceName, const char* methodName, const char* formArgs, const char* resType, const char* reqType,
+ const char* target, const char* username, const char* password){
 
-    string url = "http://127.0.0.1:8010/";
-    url.append(argv[1]);
+    
+    // string url = "http://127.0.0.1:8010/";
+    cout << target << endl;
+    string url = target;
+    url.append(serviceName);
     url += '/';
-    url.append(argv[2]);
+    url.append(methodName);
     url.append(resType);
 
 
     const char * c_url = url.c_str();
-    cout << url << endl;
+    // cout << url << endl;
     
 
 
     StringBuffer req,res;
     req.append(formArgs);
-    cout << req << endl;    
+    // cout << req << endl;    
     
     Owned<IHttpClientContext> httpctx = getHttpClientContext();
-
     Owned <IHttpClient> httpclient = httpctx->createHttpClient(NULL, c_url);
-    httpclient->setUserID("eatesam");
-    httpclient->setPassword("changeme");
 
+    if(strcmp(username, "default")!=0 && strcmp(password, "default") !=0)
+    {
+        httpclient->setUserID(username);
+        httpclient->setPassword(password);
+    }
+    
     cout << req << endl;
 
     if(strcmp(reqType, "json")==0)

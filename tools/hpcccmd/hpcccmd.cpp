@@ -130,8 +130,8 @@ void hpccInit::traverseProps(const char* reqRes)
 
     for(structChildren->first();structChildren->isValid();structChildren->next()) 
     {
-        IEsdlDefObject &tempQuery = structChildren->query();
-        Owned<IPropertyIterator> tempQueryProps = tempQuery.getProps();
+        IEsdlDefObject &structChildrenQuery = structChildren->query();
+        Owned<IPropertyIterator> tempQueryProps = structChildrenQuery.getProps();
         for(tempQueryProps->first();tempQueryProps->isValid();tempQueryProps->next()) 
         {
             const char* propKey = tempQueryProps->getPropKey();
