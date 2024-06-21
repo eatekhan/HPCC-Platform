@@ -8,7 +8,7 @@
 
 using namespace std;
 
-hpccService::hpccService(int argc, const char* argv[], const char* formArgs, const char* resType, const char* reqType){
+hpccService::hpccService(int argc, const char* argv[], const char* formArgs, const char* resType, const char* reqType, const char* target, const char* username, const char* password){
 
     string url = "http://127.0.0.1:8010/";
     url.append(argv[1]);
@@ -27,7 +27,12 @@ hpccService::hpccService(int argc, const char* argv[], const char* formArgs, con
     cout << req << endl;    
     
     Owned<IHttpClientContext> httpctx = getHttpClientContext();
+
     Owned <IHttpClient> httpclient = httpctx->createHttpClient(NULL, c_url);
+    httpclient->setUserID("eatesam");
+    httpclient->setPassword("changeme");
+
+    cout << req << endl;
 
     if(strcmp(reqType, "json")==0)
     {
@@ -43,7 +48,7 @@ hpccService::hpccService(int argc, const char* argv[], const char* formArgs, con
     }
     
     
-    //cout << res << endl;
+    // cout << req << endl;
     if(strcmp(resType, ".json") == 0)
     {
         auto jsonTree = createPTreeFromJSONString(res);
@@ -56,6 +61,5 @@ hpccService::hpccService(int argc, const char* argv[], const char* formArgs, con
     }
 
 
-    // cout << argv[1] << argv[2] << endl;
     
 }

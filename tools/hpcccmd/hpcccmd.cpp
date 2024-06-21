@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include "hpcccmd.hpp"
 #include "hpccshell.hpp"
-#include "httpclient.hpp"
+// #include "httpclient.hpp"
 #include "hpccservice.hpp"
 
 using namespace std;
@@ -90,7 +90,15 @@ void hpccInit::getFileNames(vector<string> &methodsList)
 void hpccInit::printHelper(const char* props)
 {
     IEsdlDefStruct* structComplexType = esdlDef->queryStruct(props);
+    if(!structComplexType)
+    {
+        return;
+    }
     Owned<IEsdlDefObjectIterator> structChildrenIterator = structComplexType->getChildren();
+    if(!structChildrenIterator)
+    {
+        return;
+    }
 
     for(structChildrenIterator->first();structChildrenIterator->isValid();structChildrenIterator->next())
     {
@@ -99,7 +107,14 @@ void hpccInit::printHelper(const char* props)
        for(tempQueryProps->first();tempQueryProps->isValid();tempQueryProps->next()) 
        {
            const char* propKey = tempQueryProps->getPropKey();
+           const char* propValue = tempQueryProps->queryPropValue();
+
            cout << "\t\t" << propKey << " " << tempQueryProps->queryPropValue() << " ";
+           if(strcmp(propKey, "type")==0 && strcmp(propValue, "string")!=0 && strcmp(propValue, "int")!=0 && strcmp(propValue, "bool")!=0)
+            {
+                cout << endl;
+                printHelper(tempQueryProps->queryPropValue());
+            }
        }
        cout << endl; 
     }
@@ -121,11 +136,11 @@ void hpccInit::traverseProps(const char* reqRes)
         {
             const char* propKey = tempQueryProps->getPropKey();
             cout << "\t" << propKey << "=" << tempQueryProps->queryPropValue() << " ";
-            if(strcmp(propKey, "complex_type")==0)
-            {
-                cout << endl;
-                printHelper(tempQueryProps->queryPropValue());
-            }
+            // if(strcmp(propKey, "complex_type")==0)
+            // {
+            //     cout << endl;
+            //     printHelper(tempQueryProps->queryPropValue());
+            // }
         }
         cout << endl;
     }
