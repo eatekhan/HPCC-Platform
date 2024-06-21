@@ -87,62 +87,87 @@ void hpccInit::getFileNames(vector<string> &methodsList)
     return;
 }
 
-void hpccInit::printHelper(const char* props)
-{
-    IEsdlDefStruct* structComplexType = esdlDef->queryStruct(props);
-    if(!structComplexType)
-    {
-        return;
-    }
-    Owned<IEsdlDefObjectIterator> structChildrenIterator = structComplexType->getChildren();
-    if(!structChildrenIterator)
-    {
-        return;
-    }
+// void hpccInit::printHelper(const char* props)
+// {
+//     IEsdlDefStruct* structComplexType = esdlDef->queryStruct(props);
+//     if(!structComplexType)
+//     {
+//         return;
+//     }
+//     Owned<IEsdlDefObjectIterator> structChildrenIterator = structComplexType->getChildren();
+//     if(!structChildrenIterator)
+//     {
+//         return;
+//     }
 
-    for(structChildrenIterator->first();structChildrenIterator->isValid();structChildrenIterator->next())
-    {
-       IEsdlDefObject &tempQuery = structChildrenIterator->query();
-       Owned<IPropertyIterator> tempQueryProps = tempQuery.getProps();
-       for(tempQueryProps->first();tempQueryProps->isValid();tempQueryProps->next()) 
-       {
-           const char* propKey = tempQueryProps->getPropKey();
-           const char* propValue = tempQueryProps->queryPropValue();
+//     for(structChildrenIterator->first();structChildrenIterator->isValid();structChildrenIterator->next())
+//     {
+//        IEsdlDefObject &tempQuery = structChildrenIterator->query();
+//        Owned<IPropertyIterator> tempQueryProps = tempQuery.getProps();
+//        for(tempQueryProps->first();tempQueryProps->isValid();tempQueryProps->next()) 
+//        {
+//            const char* propKey = tempQueryProps->getPropKey();
+//            const char* propValue = tempQueryProps->queryPropValue();
 
-           cout << "\t\t" << propKey << " " << tempQueryProps->queryPropValue() << " ";
-           if(strcmp(propKey, "type")==0 && strcmp(propValue, "string")!=0 && strcmp(propValue, "int")!=0 && strcmp(propValue, "bool")!=0)
-            {
-                cout << endl;
-                printHelper(tempQueryProps->queryPropValue());
-            }
-       }
-       cout << endl; 
-    }
-}
-
+//            cout << "\t\t" << propKey << " " << tempQueryProps->queryPropValue() << " ";
+//            if(strcmp(propKey, "type")==0 && strcmp(propValue, "string")!=0 && strcmp(propValue, "int")!=0 && strcmp(propValue, "bool")!=0)
+//             {
+//                 cout << endl;
+//                 printHelper(tempQueryProps->queryPropValue());
+//             }
+//        }
+//        cout << endl; 
+//     }
+// }
+#include <unordered_map>
+vector<string> structTrack;
 void hpccInit::traverseProps(const char* reqRes) 
 {
+
+    auto it = find(structTrack.begin(),structTrack.end(), reqRes);
+    if(it != structTrack.end())
+    {
+        structTrack.pop_back();
+        return;
+    }
+    structTrack.push_back(reqRes);
+
+
+
     IEsdlDefStruct* myStruct = esdlDef->queryStruct(reqRes);
+    if(!myStruct)
+    {
+        return;
+    }
     cout << myStruct->queryName() << endl;
 
     Owned<IEsdlDefObjectIterator> structChildren = myStruct->getChildren();
-   
+
+    if(!structChildren)
+    {
+        return;
+    }
 
     for(structChildren->first();structChildren->isValid();structChildren->next()) 
     {
         IEsdlDefObject &structChildrenQuery = structChildren->query();
-        Owned<IPropertyIterator> tempQueryProps = structChildrenQuery.getProps();
-        for(tempQueryProps->first();tempQueryProps->isValid();tempQueryProps->next()) 
+        Owned<IPropertyIterator> structChildrenQueryProps = structChildrenQuery.getProps();
+        unordered_map<string, string> propMap;
+        for(structChildrenQueryProps->first();structChildrenQueryProps->isValid();structChildrenQueryProps->next()) 
         {
-            const char* propKey = tempQueryProps->getPropKey();
-            cout << "\t" << propKey << "=" << tempQueryProps->queryPropValue() << " ";
-            // if(strcmp(propKey, "complex_type")==0)
-            // {
-            //     cout << endl;
-            //     printHelper(tempQueryProps->queryPropValue());
-            // }
+            string propKey = structChildrenQueryProps->getPropKey();
+            string propValue = structChildrenQueryProps->queryPropValue();
+            propMap[propKey] = propValue;
         }
+        
+        cout << "type" << "=" << propMap["type"] << "\t";
+        cout << "name" << "=" << propMap["name"] << "\t";
         cout << endl;
+        if(propMap["type"] != "string" && propMap["type"] != "int" && propMap["type"] != "bool" && propMap["type"] != "int64"&& propMap["type"] != "unsigned")
+        {
+            const char* tempprop = propMap["type"].c_str();
+            traverseProps(tempprop);
+        }
     }
 }
 
