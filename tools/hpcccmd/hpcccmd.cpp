@@ -121,7 +121,7 @@ void hpccInit::getFileNames(vector<string> &methodsList)
 // }
 #include <unordered_map>
 vector<string> structTrack;
-void hpccInit::traverseProps(const char* reqRes) 
+void hpccInit::traverseProps(const char* reqRes, int indent) 
 {
 
     auto it = find(structTrack.begin(),structTrack.end(), reqRes);
@@ -132,6 +132,12 @@ void hpccInit::traverseProps(const char* reqRes)
     }
     structTrack.push_back(reqRes);
 
+    string indentChar = "\t";
+    for(int i=0; i<indent; i++)
+    {
+        indentChar += "\t";
+    }
+
 
 
     IEsdlDefStruct* myStruct = esdlDef->queryStruct(reqRes);
@@ -139,6 +145,7 @@ void hpccInit::traverseProps(const char* reqRes)
     {
         return;
     }
+    cout << indentChar;
     cout << myStruct->queryName() << endl;
 
     Owned<IEsdlDefObjectIterator> structChildren = myStruct->getChildren();
@@ -159,14 +166,15 @@ void hpccInit::traverseProps(const char* reqRes)
             string propValue = structChildrenQueryProps->queryPropValue();
             propMap[propKey] = propValue;
         }
-        
-        cout << "type" << "=" << propMap["type"] << "\t";
-        cout << "name" << "=" << propMap["name"] << "\t";
+
+        cout << indentChar;
+        cout << propMap["type"] << "\t";
+        cout << propMap["name"] << "\t";
         cout << endl;
         if(propMap["type"] != "string" && propMap["type"] != "int" && propMap["type"] != "bool" && propMap["type"] != "int64"&& propMap["type"] != "unsigned")
         {
             const char* tempprop = propMap["type"].c_str();
-            traverseProps(tempprop);
+            traverseProps(tempprop, indent+1);
         }
     }
 }
@@ -306,8 +314,8 @@ void hpccInit::esdlDefInit(const char* serviceName, const char* methodName)
         auto &tempMethod = methodIter->query();
         if (strcmp(tempMethod.queryName(), methodName) == 0) 
         {
-            traverseProps(tempMethod.queryRequestType());
-            traverseProps(tempMethod.queryResponseType());
+            traverseProps(tempMethod.queryRequestType(), 0);
+            traverseProps(tempMethod.queryResponseType(), 0);
         }
     }
 }

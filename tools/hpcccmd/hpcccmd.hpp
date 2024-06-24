@@ -21,7 +21,7 @@ private:
     Owned<IFile> serviceDefFile;
 
     void getFileNames(std::vector<std::string> &methodsList);
-    void traverseProps(const char* reqRes);
+    void traverseProps(const char* reqRes, int indent);
     void getAllMethods(const char* serviceName, const char* methodName, bool &flagSuccess);
     void loadAllServices();
     void loadAllMethods(const char* serviceName);

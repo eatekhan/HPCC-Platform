@@ -43,7 +43,8 @@ hpccService::hpccService(const char* serviceName, const char* methodName, const 
 
     if(strcmp(reqType, "json")==0)
     {
-        httpclient->sendRequest("POST","application/json",req,res);
+        auto responseCode = httpclient->sendRequest("POST","application/json",req,res);
+        cout << responseCode << endl;
     }
     else if(strcmp(reqType, "form")==0)
     {
@@ -52,6 +53,12 @@ hpccService::hpccService(const char* serviceName, const char* methodName, const 
     else if(strcmp(reqType, "xml")==0)
     {
         httpclient->sendRequest("POST","text/xml",req,res);
+    }
+
+    if(res.isEmpty())
+    {
+        cout << "Request Failed" << endl;
+        return;
     }
     
     
@@ -63,8 +70,14 @@ hpccService::hpccService(const char* serviceName, const char* methodName, const 
         toJSON(jsonTree, jsonRet);
         cout << jsonRet;
     }
+    else if (strcmp(resType, ".xml") == 0) {
+        auto xmlTree = createPTreeFromXMLString(res);
+        StringBuffer xmlRet;
+        toXML(xmlTree, xmlRet);
+        cout << xmlRet << endl;
+    }
     else {
-        cout << res << endl;
+        cout << "Error Encountered, couldn't parse response type" << endl;
     }
 
 

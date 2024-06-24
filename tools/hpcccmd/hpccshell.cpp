@@ -317,14 +317,14 @@ void hpccShell::parseCmdOptions(hpccInit &myobj, int argc, const char* argv[])
             // std::cout << reqStr << std::endl;
             continue;
         }
-        if(args.matchOption(username, "--u"))
+        if(args.matchOption(username, "-u"))
         {
             hasUsername = true;
             args.next();
             // std::cout << reqStr << std::endl;
             continue;
         }
-        if(args.matchOption(password, "--p"))
+        if(args.matchOption(password, "-p"))
         {
             hasPassword = true;
             args.next();
@@ -379,7 +379,6 @@ void hpccShell::parseCmdOptions(hpccInit &myobj, int argc, const char* argv[])
             const char* resType = ".json";
             const char* reqType = "json";
             const char* targeturl = target.str();
-
 
             if(hasUsername && hasPassword)
             {
