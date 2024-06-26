@@ -15,6 +15,7 @@
 #include "hpccshell.hpp"
 // #include "httpclient.hpp"
 #include "hpccservice.hpp"
+#include "jutil.hpp"
 
 using namespace std;
 class ConcreteEsdlDefReporter : public EsdlDefReporter
@@ -87,38 +88,7 @@ void hpccInit::getFileNames(vector<string> &methodsList)
     return;
 }
 
-// void hpccInit::printHelper(const char* props)
-// {
-//     IEsdlDefStruct* structComplexType = esdlDef->queryStruct(props);
-//     if(!structComplexType)
-//     {
-//         return;
-//     }
-//     Owned<IEsdlDefObjectIterator> structChildrenIterator = structComplexType->getChildren();
-//     if(!structChildrenIterator)
-//     {
-//         return;
-//     }
 
-//     for(structChildrenIterator->first();structChildrenIterator->isValid();structChildrenIterator->next())
-//     {
-//        IEsdlDefObject &tempQuery = structChildrenIterator->query();
-//        Owned<IPropertyIterator> tempQueryProps = tempQuery.getProps();
-//        for(tempQueryProps->first();tempQueryProps->isValid();tempQueryProps->next()) 
-//        {
-//            const char* propKey = tempQueryProps->getPropKey();
-//            const char* propValue = tempQueryProps->queryPropValue();
-
-//            cout << "\t\t" << propKey << " " << tempQueryProps->queryPropValue() << " ";
-//            if(strcmp(propKey, "type")==0 && strcmp(propValue, "string")!=0 && strcmp(propValue, "int")!=0 && strcmp(propValue, "bool")!=0)
-//             {
-//                 cout << endl;
-//                 printHelper(tempQueryProps->queryPropValue());
-//             }
-//        }
-//        cout << endl; 
-//     }
-// }
 #include <unordered_map>
 vector<string> structTrack;
 void hpccInit::traverseProps(const char* reqRes, int indent) 
@@ -141,6 +111,7 @@ void hpccInit::traverseProps(const char* reqRes, int indent)
 
 
     IEsdlDefStruct* myStruct = esdlDef->queryStruct(reqRes);
+
     if(!myStruct)
     {
         return;
@@ -168,12 +139,46 @@ void hpccInit::traverseProps(const char* reqRes, int indent)
         }
 
         cout << indentChar;
-        cout << propMap["type"] << "\t";
+        if(!propMap["complex_type"].empty())
+        {
+            cout << propMap["complex_type"] << "\t";
+        }
+        else if(!propMap["enum_type"].empty())
+        {
+            cout << propMap["enum_type"] << "\t";
+        }
+        else
+        {
+            cout << propMap["type"] << "\t";
+        }
+        
         cout << propMap["name"] << "\t";
+
+        // for(auto &it:propMap)
+        // {
+        //     if(it.first == "type" || it.first == "name" || it.first == "complex_type")
+        //     {
+        //         continue;
+        //     }
+        //     cout <<  it.first << "\t" << it.second << "\t";
+        // }
         cout << endl;
-        if(propMap["type"] != "string" && propMap["type"] != "int" && propMap["type"] != "bool" && propMap["type"] != "int64"&& propMap["type"] != "unsigned")
+
+
+
+        if(propMap["type"] != "string" && propMap["type"] != "int" && propMap["type"] != "bool" && propMap["type"] != "int64"&& propMap["type"] != "unsigned" && propMap["complex_type"].empty() && !propMap["type"].empty())
         {
             const char* tempprop = propMap["type"].c_str();
+            traverseProps(tempprop, indent+1);
+        }
+        else if(!propMap["complex_type"].empty() )
+        {
+            const char* tempprop = propMap["complex_type"].c_str();
+            traverseProps(tempprop, indent+1);
+        }
+        else if(!propMap["enum_type"].empty())
+        {
+            const char* tempprop = propMap["enum_type"].c_str();
             traverseProps(tempprop, indent+1);
         }
     }
@@ -329,6 +334,13 @@ int main(int argc, const char* argv[])
   
 
     hpccShell myshell(argc,argv);
+    // auto &temp =  queryEnvironmentConf();
+    // auto it = temp.getIterator();
+    // for(it->first();it->isValid();it->next())
+    // {
+    //     cout << it->getPropKey() << " " << it->queryPropValue() << endl;
+    // }
+
 
     
     

@@ -12,7 +12,6 @@ hpccService::hpccService(const char* serviceName, const char* methodName, const 
  const char* target, const char* username, const char* password){
 
     
-    // string url = "http://127.0.0.1:8010/";
     cout << target << endl;
     string url = target;
     url.append(serviceName);
@@ -22,13 +21,11 @@ hpccService::hpccService(const char* serviceName, const char* methodName, const 
 
 
     const char * c_url = url.c_str();
-    // cout << url << endl;
     
 
-
-    StringBuffer req,res;
+    int responseCode = -1;
+    StringBuffer req,res,status;
     req.append(formArgs);
-    // cout << req << endl;    
     
     Owned<IHttpClientContext> httpctx = getHttpClientContext();
     Owned <IHttpClient> httpclient = httpctx->createHttpClient(NULL, c_url);
@@ -39,30 +36,36 @@ hpccService::hpccService(const char* serviceName, const char* methodName, const 
         httpclient->setPassword(password);
     }
     
-    cout << req << endl;
+    
 
     if(strcmp(reqType, "json")==0)
     {
-        auto responseCode = httpclient->sendRequest("POST","application/json",req,res);
-        cout << responseCode << endl;
+       responseCode = httpclient->sendRequest("POST","application/json",req,res, status ,true);
+
     }
     else if(strcmp(reqType, "form")==0)
     {
-        httpclient->sendRequest("POST","application/x-www-form-urlencoded",req,res);
+       responseCode = httpclient->sendRequest("POST","application/x-www-form-urlencoded",req,res, status ,true);
     }
     else if(strcmp(reqType, "xml")==0)
     {
-        httpclient->sendRequest("POST","text/xml",req,res);
+       responseCode = httpclient->sendRequest("POST","text/xml",req,res, status ,true);
     }
 
-    if(res.isEmpty())
+    if(responseCode != 0 )
     {
-        cout << "Request Failed" << endl;
+        cout << "Enter a valid esp target" << endl;
+        return;
+    }
+
+    if(strcmp("401 Unauthorized", status)==0)
+    {
+        cout << "Unauthorized Request, Enter a valid username and password" << endl;
         return;
     }
     
     
-    // cout << req << endl;
+    
     if(strcmp(resType, ".json") == 0)
     {
         auto jsonTree = createPTreeFromJSONString(res);
